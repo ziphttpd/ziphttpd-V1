@@ -1,0 +1,18 @@
+{
+	"host": "ziphttpd.com",
+	"docgroup": "ziphttpd-V1",
+	"name": "ziphttpd",
+	"docroot": "index.html",
+	"contenttype": {
+		"html,htm": "text/html",
+		"js": "text/javascript",
+		"css": "text/css",
+		"png": "image/png",
+		"ico": "image/icon",
+		"svg": "image/svg+xml",
+		"endterminator": null
+	},
+	"contentencoding": "utf-8",
+	"usestaticfiles": true,
+	"endterminator": null
+}
