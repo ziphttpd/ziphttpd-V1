@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ZipHttpd ガイド - ドキュメント</title>
+		<link rel="stylesheet" type="text/css" href="css/common.css">
+		<link rel="stylesheet" type="text/css" href="highlight/a11y-dark.css">
+		<script src="highlight/highlight.pack.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+
+		<script src="js/util.js"></script>
+<script>
+// TODO: fetch API を使うべき？
+wget("toc.json").then(info => {
+	const result = info.result;
+	const holder = document.getElementById("toc");
+	const tocsobj = JSON.parse(result);
+//	alert(result + location.pathname);
+	const base = location.pathname.split('/', 4).join('/') + '/';
+	if (document.readyState === 'loading') {
+		window.addEventListener('DOMContentLoaded', e => {
+			createToc(holder, tocsobj, base);
+		});
+	} else {
+		createToc(holder, tocsobj, base);
+	}
+}).catch(info => {
+	console.log(info.result);
+});
+
+</script>
+
+	</head>
+	<body>
+<div id="side">
+	<div class="title">
+		<img class="minilogo" src="img/ZipHttpd.svg"/>
+		&nbsp;ZipHttpd<br>
+		&nbsp;ガイドブック<br>
+	</div>
+	<div class="version">ver 0.02&nbsp;(2020/12)</div>
+	<hr class="isohr"/>
+
+	<div id="toc">目次<br></div>
+
+	<hr class="isohr"/>
+	<div id="google_translate_element"></div>
+
+</div>
+<div id="main">
+		<a name="document"></a>
+		<h1>ドキュメント</h1>
+
+		<a name="ドキュメントモデル"></a>
+		<h2>ドキュメントモデル</h2>
+		<div class="ind30px">
+
+			<a href="#zhd.json">ドキュメント設定ファイル</a>で設定する階層構造です。<br>
+
+			<a name="ホスト"></a>
+			<h3>ホスト</h3>
+			<p class="ind1em">
+				複数のドキュメントグループを登録する先です。<br>
+				docs/ 以下にコピーしたドキュメントは localhost ホストに登録されます。<br>
+				selector ツールでダウンロードしたドキュメントは、配布元のホストで登録されます。<br>
+			</p>
+			<p class="append">
+				<a href="#zhd.json">ドキュメント設定ファイル</a>でホストを記述できますが無意味です。<br>
+				これは、悪意を持った製作者が第三者のホストを名乗ることが可能になるためです。<br>
+			</p>
+
+			<h3>ドキュメントグループ</h3>
+			<p class="ind1em">
+				複数のドキュメントをグループ化するものです。<br>
+				例えば製品のバージョンごとにドキュメントを管理するなどの目的を想定してあります。<br>
+			</p>
+
+			<h3>ドキュメント</h3>
+			<p class="ind1em">
+				一つの zip ファイルです。<br>
+				規定の拡張子は zhd ですが、zip, jar も利用できます。<br>
+			</p>
+		</div>
+
+		<a name="固定リンク"></a>
+		<h2>固定リンク</h2>
+
+		<div class="ind30px">
+			<p class="ind1em">
+				ホスト別のドキュメントは、同じポートで稼働します。<br>
+				別のポートでアクセスしても正しいポートにリダイレクトされます。<br>
+				そのため、ブラウザでブックマークしたドキュメントも正しく機能します。<br>
+				外部アプリから特定のドキュメントを開く時には、代表ポート 8823 を用いてください。<br>
+			</p>
+
+<div class="half">ヘルプ表示の例<pre><code class="cs">var URL = "http://localhost:8823/ホスト/グループ/ドキュメント/index.html#トピック";
+System.Diagnostics.Process.Start(URL);<br>
+</code></pre></div>
+
+		</div>
+
+		<hr/>
+		copyright ZipHttpd.com 2020<br>
+</div>
+	</body>
+</html>

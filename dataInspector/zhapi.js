@@ -16,10 +16,12 @@
 function ZHAPI(name) {
 	this.name = name;
 	this.version = "1";
+	this.data = {};
 };
 
 ZHAPI.prototype.Api = function(api, data) {
 	const name = this.name;
+	const zh = this;
 	const param = {
 		api: api,
 		name: name,
@@ -46,6 +48,7 @@ ZHAPI.prototype.Api = function(api, data) {
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState==4) {
 				const info = {
+					zh: zh,
 					api: param.api,
 					items: "",
 					result: xhr.response,
@@ -87,7 +90,9 @@ ZHAPI.prototype.List = function() {
 	return this.Api('list', {});
 }
 
-ZHAPI.prototype.Write = function(data) {
+ZHAPI.prototype.Write = function(key, value) {
+	const data = {};
+	data[key] = value;
 	return this.Api('write', data);
 }
 
@@ -97,4 +102,8 @@ ZHAPI.prototype.Read = function(data) {
 
 ZHAPI.prototype.Delete = function(data) {
 	return this.Api('delete', data);
+}
+
+ZHAPI.prototype.Dirs = function() {
+	return this.Api('dirs', {});
 }

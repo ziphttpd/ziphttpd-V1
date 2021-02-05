@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ZipHttpd ガイド - ドキュメント開発</title>
+		<link rel="stylesheet" type="text/css" href="css/common.css">
+		<link rel="stylesheet" type="text/css" href="highlight/a11y-dark.css">
+		<script src="highlight/highlight.pack.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+
+		<script src="js/util.js"></script>
+<script>
+// TODO: fetch API を使うべき？
+wget("toc.json").then(info => {
+	const result = info.result;
+	const holder = document.getElementById("toc");
+	const tocsobj = JSON.parse(result);
+//	alert(result + location.pathname);
+	const base = location.pathname.split('/', 4).join('/') + '/';
+	if (document.readyState === 'loading') {
+		window.addEventListener('DOMContentLoaded', e => {
+			createToc(holder, tocsobj, base);
+		});
+	} else {
+		createToc(holder, tocsobj, base);
+	}
+}).catch(info => {
+	console.log(info.result);
+});
+
+</script>
+
+	</head>
+	<body>
+<div id="side">
+	<div class="title">
+		<img class="minilogo" src="img/ZipHttpd.svg"/>
+		&nbsp;ZipHttpd<br>
+		&nbsp;ガイドブック<br>
+	</div>
+	<div class="version">ver 0.02&nbsp;(2020/12)</div>
+	<hr class="isohr"/>
+
+	<div id="toc">目次<br></div>
+
+	<hr class="isohr"/>
+	<div id="google_translate_element"></div>
+
+</div>
+<div id="main">
+
+		<h1>ドキュメント開発</h1>
+		<a name="develop"></a>
+		<h2>ドキュメント開発ガイド</h2>
+
+		<div class="ind30px">
+			<h4>開発手順</h4>
+			１．prototype.zip を{{任意の名前}}でドキュメントディレクトリにコピーします。<br>
+			２．ZipHttpd を起動すると、static/prototype.com/prototype/{{任意の名前}}としてディレクトリが作成されます。<br>
+			３．２で作成されたディレクトリ以下に html などコンテンツを作成します。<br>
+			４．ブラウザから localhost - prototype.com - {{任意の名前}} にアクセスして動作を確認します。<br>
+			５．ziphttpd/ に設定ファイル config.json を作成し、ディレクトリ以下を zip 圧縮すると、配布できるドキュメントが完成です。<br>
+
+			<h4>ドキュメント署名</h4>
+			<p class="ind1em">
+				作成したドキュメントはhttpsで公開します。<br>
+			</p>
+			<p class="ind1em">
+				設定ファイルの host 設定から SSL を使用して公開鍵と署名のファイルを取得します。<br>
+				そして、署名が無いドキュメントがドキュメントグループにある場合は警告します。<br>
+				SSL によりドキュメントの配布元の公開鍵と署名の正当性を担保するというコンセプトです。<br>
+			</p>
+			<p class="append">
+				DNS キャッシュポイズニングによるサイト偽装が脅威ですが、攻撃コスト的に見合わないだろうとの判断です。<br>
+				ドキュメント配布元を狙うよりも銀行サイトなど優先度の高い攻撃目標がいくらでもあります。<br>
+			</p>
+			<p class="ind1em">
+				以上の理由より<a href="#zhd.json">host設定</a>には、作成者が管理している WEB サーバを指定しておいてください。<br>
+				署名ツールなどは、MIT ライセンスで提供予定です。<br>
+			</p>
+
+			<p class="append">
+				zhget では配布サイトで公開されている公開鍵で署名を確認してダウンロードします。<br>
+				公開鍵の正当性を、SSL をもって担保とするコンセプトで、利用のためにドメインの取得は必須です。<br>
+				ドメインの維持費以外は GCP 無料枠や Amazon S3 などを使うことでコストは月で数円程度に抑えられます。<br>
+			</p>
+		</div>
+
+		<a name="WebAPI"></a>
+		<h2>WebAPI</h2>
+
+		<div class="ind30px">
+
+			<div class="ind1em">
+				WebAPI は ZipHttpd にリクエストすることで JavaScript では実現できない効果を得るものです。<br>
+			</div>
+
+			<a name="機能"></a>
+			<h3>機能</h3>
+			<p class="ind1em">
+				API-Ver.1 では、キーに対して値を記録する機能が実装されています。<br>
+			</p>
+			<p class="append">
+				WebAPI を呼びだすリファレンス実装として <a target="new" href="js/zhapi.js">zhapi.js</a> を用意してあります。<br>
+				WebAPI を呼びだすサンプルとして <a target="new" href="js/apitest.js">apitest.js</a> を用意してあります。<br>
+			</p>
+			<p class="ind1em">
+				構想中の API-Ver.2 では、<br>
+				・ 接続を保持して、プッシュ通知を行うウィンドウ間通信機能<br>
+				・ ドキュメント内のファイルをリストで取得する機能<br>
+				などを検討しています。<br>
+			</p>
+
+			<div class="ind1em">
+
+				<h4>(採用予定なし) ネットワーククライアント機能</h4>
+				<p class="ind1em">
+					なお、ネットワーククライアント機能は ZipHttpd に実装する予定はありません。<br>
+					ネットワーク接続が脆弱性の温床となる可能性を危惧しているためです。<br>
+					ドキュメントの更新に関しては、別ツール zhget が担当します。<br>
+				</p>
+
+			</div>
+
+			<a name="ログイン"></a>
+			<h3>ログイン</h3>
+			<p class="ind1em">
+				WebAPI の利用にはセキュリティのためログインを必要とします。<br>
+				悪意のあるドキュメントによるデータ窃盗や破壊の防止のためです。<br>
+				ログイン画面への遷移はホストごとに <a target="new" href="js/zhapi.js">zhapi.js</a> により自動的に行われます。<br>
+			</p>
+			<div class="ind1em">
+
+				<h4>ログインページ</h4>
+				<p class="ind1em">
+					ログインページは、ホストに割り当てられたポートの /login です。<br>
+					ログインページではパスワードを入力します。<br>
+					一度に一個のリクエストのみ、失敗時には5秒間のウェイトを持たせています。<br>
+				</p>
+				<p class="ind2em">
+					<img src="img/sample-login.png" title="サンプル画面"><br>
+				</p>
+
+				<h4>パスワード</h4>
+				<p class="ind1em">
+					ここで入力するパスワードは基準フォルダの password.json ファイルにホスト別に設定しておきます。<br>
+				</p>
+
+<div class="half">password.json の例<pre><code class="json">{
+    "localstorage.com": {"password": "pass", "localstorage": true},
+    "xxxx.com": {"password": "pass"}
+}
+</code></pre></div>
+
+				<p class="ind1em">
+					攻撃者がパスワードを参照できるためには、ファイルを自由に参照できている必要があります。<br>
+					ファイルを自由に参照できるなら、パスワードを窃盗する必要がありません。<br>
+				</p>
+
+			</div>
+
+			<a name="session"></a>
+			<h3>セッション管理</h3>
+				<p class="ind1em">
+					<a target="new" href="js/zhapi.js">zhapi.js</a> で実装されていますので、利用において気にする必要はありません。<br>
+					この項は、セキュリティ保持のメカニズムをレビューする場合のガイドです。<br>
+				</p>
+
+			<div class="ind1em">
+
+				<h4>概要</h4>
+				<p class="ind1em">
+					WebAPI の設計上の目標としてセンシティブな情報も保存できることを考慮しています。<br>
+					そのためには、他のホストのドキュメントからの WebAPI 実行を防止する仕掛けを持ちます。<br>
+					一般的な CSRF 対策とは少し事情が異なりますのでご注意ください。<br>
+				</p>
+
+				<h4>基本的事項</h4>
+				<p class="ind1em">
+					ドキュメントの所属するホストごとに異なるポートを使用します。<br>
+					別<a target="new" href="https://developer.mozilla.org/ja/docs/Web/Security/Same-origin_policy#Definition_of_an_origin">オリジン</a>に属するページからの WebAPI の実行は、無条件で失敗します。<br>
+				</p>
+				<p class="append">
+					<a target="new" href="https://developer.mozilla.org/ja/docs/Glossary/CORS">CORS</a>に従い、プリフライト（厳密には POST 以外の全て）に対して単純にエラーを返しているからです。<br>
+				</p>
+
+				<p class="ind1em">
+					<a target="new" href="js/zhapi.js">zhapi.js</a> を改造する際には、セッション管理が以下のコンセプトで動いている事に注意してください。<br>
+					WebAPI は、<br>
+					・ 同じオリジンから<br>
+					・ X-Requested-With ヘッダに正しい CSRF トークンが設定されている<br>
+					リクエストのみが実行可能です。<br>
+					CSRF トークンは、ログインページでストレージAPIの token 値として取得します。<br>
+					トークンは永続的ではなく ZipHttpd が再起動されるとリセットされます。<br>
+				</p>
+
+				<h4>ログインページ遷移</h4>
+				<p class="ind1em">
+					<a target="new" href="js/zhapi.js">zhapi.js</a> を読み込むと、トークンが取得されていない場合には、ログインページに自動遷移します。<br>
+				</p>
+
+<div class="half">チェック部分 (<a target="new" href="js/zhapi.js">zhapi.js</a>)<pre><code class="js">(function() {
+    const zh = new ZHAPI('auto');
+    zh.Noop().then(function(info) {}).catch(function(error) {});
+})();
+</code></pre></div>
+
+				<h4>ログイン結果</h4>
+				<p class="ind1em">
+					ログインの試行の結果は、一旦ログインページに戻されます。<br>
+					ページのデータとしてトークンが設定されていた場合、トークンを記録して元々の URL に自動的に遷移します。<br>
+				</p>
+
+<div class="half">/login でのトークン記録処理部分 (loginHandler.go)<pre><code class="js">        document.addEventListener("DOMContentLoaded", function() {
+            let token = "{{.Token}}";
+            window['localStorage'].removeItem('token')
+            window['sessionStorage'].removeItem('token')
+            window['{{.Storage}}'].setItem('token', token);
+            if (token) {
+                location.href = "{{.RedirectTo}}";
+            } else {
+                document.all.item("ad").src = "{{.AdURL}}";
+            }
+        });
+</code></pre></div>
+
+				<p class="ind1em">
+					CSRF トークンの保存には Cookie ではなく<a target="new" href="https://developer.mozilla.org/ja/docs/Web/API/Window/sessionStorage">セッションストレージ</a>を利用します。<br>
+					Cookie はポート番号を区別しないため、別オリジンのドキュメントからでも参照できてしまうからです。<br>
+					ストレージ API ならばポート番号が異なる別オリジンのドキュメントでは参照できません。<br>
+				</p>
+				<p class="append">
+					この保存場所は設定で<a target="newpage" href="https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage">ローカルストレージ</a>を使用することもできますが、保持期間が永続的であることには留意してください。<br>
+					杞憂ではありますが、何らかの方法でオリジンを誤魔化す脆弱性があった場合など、トークンが漏洩する危険性が増します。<br>
+					そのため、上記の例でのxxxx.comホストのように無指定である場合には、セッションストレージを使用します。<br>
+				</p>
+
+			</div>
+
+		</div>
+
+		<hr/>
+		copyright ZipHttpd.com 2020<br>
+</div>
+	</body>
+</html>

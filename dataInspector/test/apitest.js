@@ -14,7 +14,7 @@
 		return zh.List();
 	}).then(function(info, result) {
 		callback(info, result);
-		return zh.Write({item1: 'writedata1'});
+		return zh.Write("item1", 'writedata1');
 	}).then(function(info) {
 		callback(info);
 		return zh.List();
@@ -23,10 +23,10 @@
 		return zh.Read(['item1', 'item2']);
 	}).then(function(info) {
 		callback(info);
-		return zh.Write({item2: 'writedata2'});
+		return zh.Write('item2', 'writedata2');
 	}).then(function(info) {
 		callback(info);
-		return zh.Write({item3: 'writedata3'});
+		return zh.Write('item3', 'writedata3');
 	}).then(function(info) {
 		callback(info);
 		return zh.List();

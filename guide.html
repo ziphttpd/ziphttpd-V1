@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ZipHttpd ガイド - トップ</title>
+		<link rel="stylesheet" type="text/css" href="css/common.css">
+		<link rel="stylesheet" type="text/css" href="highlight/a11y-dark.css">
+		<script src="highlight/highlight.pack.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+
+		<script src="js/util.js"></script>
+<script>
+// TODO: fetch API を使うべき？
+wget("toc.json").then(info => {
+	const result = info.result;
+	const holder = document.getElementById("toc");
+	const tocsobj = JSON.parse(result);
+//	alert(result + location.pathname);
+	const base = location.pathname.split('/', 4).join('/') + '/';
+	if (document.readyState === 'loading') {
+		window.addEventListener('DOMContentLoaded', e => {
+			createToc(holder, tocsobj, base);
+		});
+	} else {
+		createToc(holder, tocsobj, base);
+	}
+}).catch(info => {
+	console.log(info.result);
+});
+</script>
+
+	</head>
+	<body>
+<div id="side">
+	<div class="title">
+		<img class="minilogo" src="img/ZipHttpd.svg"/>
+		&nbsp;ZipHttpd<br>
+		&nbsp;ガイドブック<br>
+	</div>
+	<div class="version">ver 0.02&nbsp;(2020/12)</div>
+	<hr class="isohr"/>
+
+	<div id="toc">目次<br></div>
+
+	<hr class="isohr"/>
+	<div id="google_translate_element"></div>
+
+</div>
+<div id="main">
+		<a name="use"></a>
+		<h2>利用ガイド</h2>
+		<div class="ind30px">
+
+			<a name="use_run"></a>
+			<h3>使用方法</h3>
+
+			<div class="ind30px">
+
+				<h4>準備</h4>
+				<p class="ind1em">
+					任意のディレクトリにファイルを置きます。<br>
+				</p>
+
+<div class="half">実行前のファイル構成<pre><code class="text">D:\.ziphttpd&gt;tree . /F
+D:\.ZIPHTTPD
+│  ziphttpd.exe
+│  launcher.exe
+│
+└─docs
+        prototype.zip
+</code></pre></div>
+
+				<p class="append">
+					launchar.exe は Windows のサポートアプリ(.Net)です。<br>
+					prototype.zip はドキュメント開発で使用するひな型です。<br>
+					どちらも必須ではありません。<br>
+				</p>
+
+				<h4>実行</h4>
+				<p class="ind1em">
+					ziphttpd.exe を実行します。<br>
+					quit とコマンドを入力すると終了します。<br>
+				</p>
+
+<div class="half">実行例<pre><code class="text">D:\.ziphttpd&gt;ziphttpd
+directory : D:\.ziphttpd
+quit
+
+D:\.ziphttpd&gt;
+</code></pre></div>
+
+				<p class="ind1em">
+					実行により以下のようなファイル構成が生成されます。<br>
+				</p>
+
+<div class="half">実行後のファイル構成<pre><code class="text">D:\.ziphttpd&gt;tree . /F
+D:\.ZIPHTTPD
+│  ziphttpd.exe
+│  launcher.exe
+│  ziphttpd.json
+│  portlockins.json
+│
+├─docs
+│      prototype.zip
+│      prototype.json
+│
+├─log
+│      ziphttpd.log
+│
+├─static
+│  └─prototype.com
+│      └─prototype
+├─api
+│  └─prototype.com
+└─system
+</code></pre></div>
+
+				<h4>コマンドライン</h4>
+				<p class="ind1em">
+					-h をつけて実行するとコマンドライン引数の説明が表示されます。<br>
+				</p>
+
+
+<div class="half">コマンドラインヘルプ<pre><code class="text">D:\.ziphttpd&gt; ziphttpd -h
+Usage of ziphttpd:
+  -config string
+        configuration directory
+  -docport int
+        document listen port (default 58823)
+  -log string
+        logging directory
+  -port int
+        listen port (default 8823)
+</code></pre></div>
+
+				<p class="ind1em">
+				</p>
+
+			</div>
+
+
+			<a name="develop_directory"></a>
+			<h3>ディレクトリ構成</h3>
+
+			<div class="ind30px">
+
+				<h4>基準ディレクトリ</h4>
+				<p class="ind1em">
+					基本的には ZipHttpd の実行ファイルがあるディレクトリを使用します。<br>
+					実行時引数で特定ディレクトリを指定できます。<br>
+				</p>
+
+				<p class="ind1em">
+					まずは、ZipHttpd 設定ファイル (<a href="#ziphttpd.json">後述</a>) の置き場として考えてください。<br>
+				</p>
+
+				<h4>ドキュメントディレクトリ (docs)</h4>
+				<p class="ind1em">
+					zip ファイルをコピーするディレクトリです。<br>
+				</p>
+				<p class="ind1em">
+					実行例で見られるように、ZipHttpd を起動すると zip ファイルに対応した json ファイルが生成されます。<br>
+					これはドキュメント単位の設定ファイルです。<br>
+				</p>
+
+				<h4>ログディレクトリ (log)</h4>
+				<p class="ind1em">
+					実行時ログ ziphttpd.log を出力するディレクトリです。<br>
+					基準ディレクトリの下の log を使用しますが、実行時引数 -log で特定ディレクトリを指定できます。<br>
+					/var/log 以下にログを出力させたい場合に指定します。<br>
+				</p>
+<div class="half">ログ<pre><code class="text">2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/main.go:50: [INFO] ---- server start ----
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:35: [INFO] create server:prototype.com
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:48: [INFO] run server:prototype.com, port:58823
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:35: [INFO] create server:system
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:48: [INFO] run server:system, port:8823
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/main.go:96: [INFO] ---- server stop ----
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/main.go:73: [INFO] signal: interrupt
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:65: [WARN] server:system : accept tcp [::]:8823: use of closed network connection
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:65: [WARN] server:prototype.com : accept tcp [::]:58823: use of closed network connection
+</code></pre></div>
+
+				<p class="ind1em">
+					ローテーションなどは行いませんので、定期的に削除してください。<br>
+				</p>
+				<p class="ind1em">
+				</p>
+
+				<h4>一般 API データディレクトリ (api)</h4>
+				<p class="ind1em">
+					WebAPI での登録データを格納するディレクトリです。<br>
+					api/ドキュメントグループ名/ に格納します。<br>
+				</p>
+
+				<h4>システム API データディレクトリ (system)</h4>
+				<p class="ind1em">
+					system ドキュメントグループが WebAPI で使用する予定です。<br>
+					system ドキュメントグループではドキュメントに対する API も使用できるようにする想定ですので特殊です。<br>
+					そのため念のために隔離しているだけで、現時点では使用されません。<br>
+				</p>
+
+				<a name="static"></a>
+				<h4>静的ファイルディレクトリ (static)</h4>
+				<p class="ind1em">
+					ドキュメント開発作業用のフォルダです。<br>
+					static/ドキュメントグループ名/ドキュメント名/以下を、zip ファイル内のファイルよりも優先的に読み出します。<br>
+					ドキュメントのディレクトリの外は参照できません。<br>
+					<span class="strong">更新版をダウンロードしても静的ファイルが読み出されるため、利用時には注意してください。</span>
+				</p>
+
+			</div>
+
+			<a name="develop_files"></a>
+			<h3>ファイル構成</h3>
+
+			<p class="ind30px">
+				ZipHttpd において、設定ファイルは　json として記述します。<br>
+			</p>
+
+			<div class="ind30px">
+
+				<a name="ziphttpd.json"></a>
+				<h4>ZipHttpd 設定ファイル</h4>
+				<p class="ind1em">
+					ziphttpd.json という固定の名称のファイルです。<br>
+				</p>
+
+<div class="half">ziphttpd.json の例<pre><code class="json">{
+    "contenttype": {
+        "html,htm": "text/html",
+        "js": "text/javascript",
+        "json": "text/json",
+        "css": "text/css",
+        "txt": "text/plain",
+        "md": "text/markdown",
+        "bmp": "image/bmp",
+        "gif": "image/gif",
+        "ico": "image/ico",
+        "jpg,jpg,jpeg,jfif,pjpeg,pjp": "image/jpeg",
+        "png": "image/png",
+        "svg": "image/svg+xml",
+        "endterminator": null
+    },
+    "endterminator": null
+}
+</code></pre></div>
+
+				<a name="zhd"></a>
+				<h4>ドキュメントファイル</h4>
+				<p class="ind1em">
+					ドキュメントディレクトリに入れる zip ファイルです。<br>
+				</p>
+
+				<a name="zhd.json"></a>
+				<h4>ドキュメント設定ファイル</h4>
+				<p class="ind1em">
+					ドキュメントファイルの拡張子を json に置き換えたファイルです。<br>
+					マニフェストファイルがない場合にはpathとnameだけが設定されます。<br>
+				</p>
+				<p class="append">
+					一般的に流通している JavaDoc を表示する場合にシフトJISで書かれていたりするなどの場合があります。<br>
+					その場合に、文字コードや初期表示ページを設定することでより便利に使えます。<br>
+				</p>
+
+<div class="half">ドキュメント設定ファイルの例<pre><code class="json">{
+    "name": "任意の名称",
+    "path": "ファイル.zip",
+}
+</code></pre></div>
+
+				<p class="ind1em">
+					<table class="std">
+						<tr><th>キー</th><th>デフォルト</th><th>機能</th><th>その他</th></tr>
+						<tr><td>path</td><td>zip ファイル名</td><td>zip ファイル名</td><td>絶対パスで記述可能。</td></tr>
+						<tr><td>docgroup</td><td>"common"</td><td>ドキュメントグループ名</td><td rowspan="2">トップページに表示されます。<br>またURLパスの先頭に使用されます。</td></tr>
+						<tr><td>name</td><td>zip ベース名</td><td>ドキュメント名<br></td></tr>
+						<tr><td>contentencoding</td><td>"utf-8"</td><td>Content-Encoding</td><td>テキストの文字エンコーディングです。</td></tr>
+						<tr><td>contenttype</td><td>なし</td><td>Content-Type</td><td>拡張子別の MIME タイプを記述します。<br>指定しない場合、ZipHttpd 設定ファイルを参照します。</td></tr>
+						<tr><td>host</td><td>なし</td><td>配布元のホスト名</td><td>将来的に署名や更新で使用します。<a href="#ドキュメントグループ署名">→ 参照</a></td></tr>
+					</table>
+				</p>
+				<p class="append">
+					同じドキュメントグループ名で同じドキュメント名を持つドキュメントが存在した場合、動作は不定です。<br>
+				</p>
+
+				<a name="config.json"></a>
+				<h4>マニフェストファイル</h4>
+				<p class="ind1em">
+					ドキュメントファイル内に入れておく ziphttpd/config.json という固定の名称のファイルです。<br>
+				</p>
+
+<div class="half">docs/prototype.zip/ziphttpd/config.json<pre><code class="json">{
+    "name": "prototype",
+    "docgroup": "prototype.com",
+    "host": "prototype.com",
+    "contentencoding": "utf-8",
+    "docroot": "index.html",
+    "contenttype": {
+        "html,htm": "text/html",
+        "js": "text/javascript",
+        "css": "text/css",
+        "png": "image/png",      "ico": "image/icon",
+        "svg": "image/svg+xml"
+    },
+    "usestaticfiles": true
+}
+</code></pre></div>
+
+				<p class="ind1em">
+					参考例に対応したドキュメントの設定ファイルは以下のように自動設定されます。<br>
+				</p>
+
+<div class="half">docs/prototype.json<pre><code class="json">{
+    "contentencoding": "utf-8",
+    "contenttype": {
+        "css": "text/css",
+        "html,htm": "text/html",
+        "ico": "image/icon",
+        "js": "text/javascript",
+        "png": "image/png",
+        "svg": "image/svg+xml"
+    },
+    "docgroup": "prototype.com",
+    "docroot": "index.html",
+    "host": "prototype.com",
+    "name": "prototype",
+    "path": "prototype.zip",
+    "usestaticfiles": true
+}
+</code></pre></div>
+
+		</div>
+
+		<hr/>
+		copyright ZipHttpd.com 2020<br>
+	</div>
+</div>
+</body>
+</html>

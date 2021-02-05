@@ -1,0 +1,52 @@
+{
+	"files": {
+		"index": "index.html"
+		, "overview": "overview.html"
+		, "guide": "guide.html"
+		, "document": "document.html"
+		, "develop": "develop.html"
+	}
+	, "tocs": [
+		{
+			"topic": {"file": "index", "anchor":"", "text": "はじめに"}
+		}
+
+		, {
+			"topic": {"file": "overview", "anchor":"", "text": "概要"}
+			, "chapter": [
+				{"file": "overview", "anchor":"httpd", "text": "HTTP サーバの優れた点"}
+				, {"file": "overview", "anchor":"ZipHttpd", "text": "ZipHttpd の優れた点"}
+				, {"file": "overview", "anchor":"other", "text": "ライセンスなど"}
+			]
+		}
+
+		, {
+			"topic": {"file": "guide", "anchor":"use", "text": "利用ガイド"}
+			, "chapter": [
+				{"file": "guide", "anchor":"use_run", "text": "使用方法"}
+				, {"file": "guide", "anchor":"develop_directory", "text": "ディレクトリ構成"}
+				, {"file": "guide", "anchor":"develop_files", "text": "ファイル構成"}
+			]
+		}
+
+		, {
+			"topic": {"file": "document", "anchor":"document", "text": "ドキュメント"}
+			, "chapter": [
+				{"file": "document", "anchor":"ドキュメントモデル", "text": "ドキュメントモデル"}
+				, {"file": "document", "anchor":"固定リンク", "text": "固定リンク"}
+			]
+		}
+
+		, {
+			"topic": {"file": "develop", "anchor":"develop", "text": "ドキュメント開発ガイド"}
+		}
+
+		, {
+			"topic": {"file": "develop", "anchor":"WebAPI", "text": "WebAPI"}
+			, "chapter": [
+				{"file": "develop", "anchor":"機能", "text": "機能"}
+				, {"file": "develop", "anchor":"session", "text": "セッション管理"}
+			]
+		}
+	]
+}

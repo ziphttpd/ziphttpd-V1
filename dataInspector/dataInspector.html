@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ZipHttpd API data inspector</title>
+
+  <script src="bootstrap/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+
+  <script src="util.js"></script>
+  <script src="bootstrap_util.js"></script>
+  <script src="bootstrap_accordion.js"></script>
+  <script src="zhapi.js"></script>
+</head>
+
+<body>
+
+  <div style="margin: 15px;"><h1><img src="ZipHttpd.svg"/> ZipHttpd API data inspector</h1></div>
+
+  <div id="holder" style="margin: 15px;"></div>
+
+  <div class="fixed-bottom" style="margin: 15px;">
+    <hr />
+    copyright <a href="https://ziphttpd.com" target="ziphttpd.com">ZipHttpd.com</a> 2021<br>
+  </div>
+
+<!-- Modal -->
+<div id="dialog-execute" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="dialog-execute-title" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dialog-execute-title">Execute</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Execute</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="dialog-alert" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="dialog-alert-title" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dialog-alert-title">Execute</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+<script>
+	// アコーディオン
+	var rootAcc = new Accordion("holder", true);
+
+	function alertDialog(titleHtml, bodyHtml) {
+		const dialog = document.querySelector("#dialog-alert");
+		dialog.querySelector(".modal-title").innerHTML = titleHtml;
+		dialog.querySelector(".modal-body").innerHTML = bodyHtml;
+		var myModal = new bootstrap.Modal(dialog, {});
+		myModal.show();
+	}
+
+	function executeDialog(bodyHtml, onExecute) {
+		const dialog = document.querySelector("#dialog-execute");
+		dialog.querySelector(".modal-body").innerHTML = bodyHtml;
+		dialog.querySelector(".btn-primary").onclick = onExecute;
+		var myModal = new bootstrap.Modal(dialog, {});
+		myModal.show();
+	}
+
+	function callback(info) {
+		console.log(info.api + '(' + info.items + ") : " + info.result);
+	}
+	function onerror(error) {
+		console.log(error);
+	}
+
+	// キー更新
+	function updateKey(holderId, key) {
+		// ルートアコーディオンから、ホルダーのデータを取り出す
+		const itemdata = rootAcc.ItemData(holderId);
+		const zh = itemdata.zh;
+
+		// 値
+		const valueId = `value-${holderId}_${key}`;
+		const valueText = document.querySelector("#"+valueId);
+		const value = valueText.value;
+
+		// キー書き込み
+		zh.Write(key, value)
+		.then(function(info) {
+			callback(info);
+		}).catch(function(error) {
+			onerror(error);
+		});
+	}
+
+	// キー登録
+	function registerNewKey(holderId) {
+		// ルートアコーディオンから、ホルダーのデータを取り出す
+		const itemdata = rootAcc.ItemData(holderId);
+		const zh = itemdata.zh;
+		const acc = zh.data;
+
+		// 新規のキー
+		const keyId = `card_key_input_${holderId}`;
+		const keyInput = document.querySelector("#"+keyId);
+		const key = keyInput.value;
+		// 新規の値
+		const valueId = `card_value_input_${holderId}`;
+		const valueText = document.querySelector("#"+valueId);
+		const value = valueText.value;
+
+		if (key==="") {
+			alertDialog("empty key", "No value entered for the key.");
+			return;
+		}
+		if (acc.HasItem(key)) {
+			alertDialog("duplicate key", "Already exist key.");
+			return;
+		}
+
+		// キー追加
+		zh.Write(key, value)
+		.then(function(info) {
+			callback(info);
+			createKeyAccordionItem(acc, key, value);
+			// TODO: 登録したら登録領域の内容は消す (keyInnput.value="";valueText.value="";) べきか？
+		}).catch(function(error) {
+			onerror(error);
+		});
+	}
+
+	// ホルダーの個別キー領域
+	function createKeyAccordionItem(acc, key, value) {
+		const title = createSpan(`key: "<strong>${key}</strong>"`);
+		const content = createElement("div");
+		const valueId = `value-${acc.holderId}_${key}`;
+		const onclick = `updateKey("${acc.holderId}", "${key}")`;
+		const input = createTextArea(valueId, "value", value, {value:"update", onclick:onclick});
+		content.appendChild(input);
+		acc.AddItem(key, title, content);
+	}
+
+	// ホルダーの新規キー作成領域
+	function createNewKeyCard(holderId) {
+		const card = createElement("div", {class:"card row g-3", style:"margin: 10px; padding-bottom: 15px;"});
+		//<label for="basic-url" class="form-label">regist new key.</label>
+		const title = createElement("label", {class:"form-label"});
+		title.innerHTML = "regist new key.";
+		card.appendChild(title);
+		// キー
+		const keyId = `card_key_input_${holderId}`;
+		const onclick = `registerNewKey("${holderId}")`;
+		card.appendChild(createInputText(keyId, "key", "", "key name", {value:"add", onclick:onclick}));
+		// 値
+		const valueId = `card_value_input_${holderId}`;
+		card.appendChild(createTextArea(valueId, "value", ""));
+		return card;
+	}
+
+	// rootアコーディオンにホルダーを追加
+	function createHolderPan(rootAcc, holderId) {
+		// ホルダー用のZipHttpdAPI
+		const holderZh = new ZHAPI(holderId);
+
+		// holderId の共通表示部
+		const content = createElement("div");
+		const holder = createElement("div", {id:"content_" + holderId});
+		content.appendChild(holder);
+
+		// holderId のアコーディオンアイテム生成
+		const title = createSpan(`holder: "<strong>${holderId}</strong>"`);
+		rootAcc.AddItem(holderId, title, content, {folder:holderId, rootZh:rootZh, zh:holderZh});
+
+		// key別の副アコーディオン生成
+		const keysAcc = new Accordion(holder.id, true);
+		holderZh.data = keysAcc;
+
+		// 新規キー作成領域
+		content.appendChild(createNewKeyCard(holderId));
+
+		// ホルダーに登録されているkeyの読み出し
+		holderZh.List()
+		.then(function(info) {
+			return info.zh.Read(JSON.parse(info.result));
+		}).then(function(info) {
+			callback(info);
+			const acc = info.zh.data;
+			const dic = JSON.parse(info.result);
+			Object.keys(dic).forEach(key => {
+				createKeyAccordionItem(acc, key, dic[key]);
+			});
+		}).catch(function(error) {
+			onerror(error);
+		});
+	}
+
+	// ルートのZipHttpdAPI
+	var rootZh = new ZHAPI("");
+	rootZh.data = rootAcc;
+	rootZh.Noop()
+	.then(function(info) {
+		return rootZh.Dirs();
+	}).then(function(info) {
+		callback(info);
+		const holders = JSON.parse(info.result);
+		holders.forEach(holderId => {
+			createHolderPan(rootAcc, holderId);
+		});
+	}).catch(function(error) {
+		onerror(error);
+	});
+</script>
+</html>
