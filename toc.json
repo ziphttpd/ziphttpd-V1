@@ -1,18 +1,22 @@
 {
-	"files": {
+	"version": "ver 0.03 (2021/02)"
+	, "files": {
 		"index": "index.html"
 		, "overview": "overview.html"
 		, "guide": "guide.html"
 		, "document": "document.html"
 		, "develop": "develop.html"
+		, "webapi": "webapi.html"
 	}
 	, "tocs": [
 		{
-			"topic": {"file": "index", "anchor":"", "text": "はじめに"}
+			"file": "index"
+			, "topic": {"file": "index", "anchor":"", "text": "はじめに"}
 		}
 
 		, {
-			"topic": {"file": "overview", "anchor":"", "text": "概要"}
+			"file": "overview"
+			, "topic": {"file": "overview", "anchor":"", "text": "概要"}
 			, "chapter": [
 				{"file": "overview", "anchor":"httpd", "text": "HTTP サーバの優れた点"}
 				, {"file": "overview", "anchor":"ZipHttpd", "text": "ZipHttpd の優れた点"}
@@ -21,7 +25,8 @@
 		}
 
 		, {
-			"topic": {"file": "guide", "anchor":"use", "text": "利用ガイド"}
+			"file": "guide"
+			, "topic": {"file": "guide", "anchor":"use", "text": "利用ガイド"}
 			, "chapter": [
 				{"file": "guide", "anchor":"use_run", "text": "使用方法"}
 				, {"file": "guide", "anchor":"develop_directory", "text": "ディレクトリ構成"}
@@ -30,7 +35,8 @@
 		}
 
 		, {
-			"topic": {"file": "document", "anchor":"document", "text": "ドキュメント"}
+			"file": "document"
+			, "topic": {"file": "document", "anchor":"document", "text": "ドキュメント"}
 			, "chapter": [
 				{"file": "document", "anchor":"ドキュメントモデル", "text": "ドキュメントモデル"}
 				, {"file": "document", "anchor":"固定リンク", "text": "固定リンク"}
@@ -38,14 +44,16 @@
 		}
 
 		, {
-			"topic": {"file": "develop", "anchor":"develop", "text": "ドキュメント開発ガイド"}
+			"file": "develop"
+			, "topic": {"file": "develop", "anchor":"develop", "text": "ドキュメント作成"}
 		}
 
 		, {
-			"topic": {"file": "develop", "anchor":"WebAPI", "text": "WebAPI"}
+			"file": "webapi"
+			, "topic": {"file": "webapi", "anchor":"WebAPI", "text": "WebAPI"}
 			, "chapter": [
-				{"file": "develop", "anchor":"機能", "text": "機能"}
-				, {"file": "develop", "anchor":"session", "text": "セッション管理"}
+				{"file": "webapi", "anchor":"機能", "text": "機能"}
+				, {"file": "webapi", "anchor":"session", "text": "セッション管理"}
 			]
 		}
 	]

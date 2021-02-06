@@ -1,11 +1,28 @@
+#google_translate_element {
+	padding-left: 1em;
+	max-width: 70px;
+}
+.goog-te-combo {
+	width: 100px;
+}
 #side {
 	position: fixed;
+	top: 0px;
+	left: 0px;
 	height: 100%;
 	width: 200px;
-	top: 0;
-	left: 0;
 	background: #edeff3;
 	z-index: 2;
+	overflow-y: scroll;
+}
+#menu::-webkit-scrollbar {
+	width: 5px;
+}
+#menu::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.3);
+}
+#menu::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.1);
 }
 #side a {
 	margin: 8px;
@@ -80,7 +97,6 @@ H1 {
 	background-color: aqua;
 	color: #000000;
 	padding: 16px 0px 16px 15px;
-//	margin-top: 2em;
 	clear: both;
 }
 H2 {
@@ -94,7 +110,6 @@ H2 {
 	background-color: #eeeecc;
 	color: #000066;
 	padding: 2px 0px 2px 10px;
-//	margin-top: 2em;
 	clear: both;
 }
 H3 {
@@ -107,20 +122,16 @@ H3 {
 	background-color: #eeeeee;
 	color: #000066;
 	padding: 2px 0px 2px 10px;
-//	margin-top: 2em;
 	clear: both;
 }
 H4 {
 	width: 400px;
 	font-size: 110%;
 	font-weight: normal;
-//	border-width: 4px 0px 0px 4px;
-//	border-style: solid;
 	border-color: #006666;
 	background-color: bisque;
 	color: #000066;
 	padding: 2px 0px 2px 10px;
-//	margin-top: 2em;
 	clear: both;
 }
 

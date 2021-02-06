@@ -1,209 +1,180 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>ZipHttpd ガイド - トップ</title>
-		<link rel="stylesheet" type="text/css" href="css/common.css">
-		<link rel="stylesheet" type="text/css" href="highlight/a11y-dark.css">
-		<script src="highlight/highlight.pack.js"></script>
-		<script>hljs.initHighlightingOnLoad();</script>
-		<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-}
-</script>
 
-		<script src="js/util.js"></script>
-<script>
-// TODO: fetch API を使うべき？
-wget("toc.json").then(info => {
-	const result = info.result;
-	const holder = document.getElementById("toc");
-	const tocsobj = JSON.parse(result);
-//	alert(result + location.pathname);
-	const base = location.pathname.split('/', 4).join('/') + '/';
-	createToc(holder, tocsobj, base);
-}).catch(info => {
-	console.log(info.result);
-});
+<head>
+	<meta charset="UTF-8">
+	<title>ZipHttpd ガイド - 概要</title>
+	<link rel="stylesheet" type="text/css" href="css/common.css">
+	<link rel="stylesheet" type="text/css" href="highlight/a11y-dark.css">
+	<script src="highlight/highlight.pack.js"></script>
+	<script type="text/javascript"
+		src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+	<script src="js/util.js"></script>
+	<script src="js/side.js"></script>
+</head>
 
-</script>
+<body>
+	<div id="side">
+		<div class="title">
+			<img class="minilogo" src="img/ZipHttpd.svg" />
+			&nbsp;ZipHttpd<br>
+			&nbsp;ガイドブック<br>
+		</div>
+		<div class="version">ver 0.02&nbsp;(2020/12)</div>
+		<hr class="isohr" />
 
-	</head>
-	<body>
-<div id="side">
-	<div class="title">
-		<img class="minilogo" src="img/ZipHttpd.svg"/>
-		&nbsp;ZipHttpd<br>
-		&nbsp;ガイドブック<br>
+		<div id="toc">目次<br></div>
+
+		<hr class="isohr" />
+		<div id="google_translate_element"></div>
+
 	</div>
-	<div class="version">ver 0.02&nbsp;(2020/12)</div>
-	<hr class="isohr"/>
-
-	<div id="toc">目次<br></div>
-
-	<hr class="isohr"/>
-	<div id="google_translate_element"></div>
-
-</div>
-<div id="main">
+	<div id="main">
 		<h1>概要</h1>
 
 		<a name="httpd"></a>
 		<h2>HTTP サーバの優れた点</h2>
 
-			<p class="ind1em">
-				HTTP サーバの優れた点についてご説明させていただきます。<br>
-			</p>
-			<p class="ind1em">
-				ドキュメントの提供において、事実上の標準として PDF があります。<br>
-				しかし PDF はあくまで印刷を目的としたフォーマットです。<br>
-				印刷を目的としないドキュメントにおいては HTML が主流です。<br>
-			</p>
-			<p class="append">
-				例：技術系の文書 <a target="new" href="https://developer.mozilla.org/ja/">MDN web docs</a>, <a target="new" href="https://docs.microsoft.com/ja-jp/">Microsoft Docs</a>
-			</p>
+		<p class="ind1em">
+			HTTP サーバの優れた点についてご説明させていただきます。<br>
+		</p>
+		<p class="ind1em">
+			ドキュメントの提供において、事実上の標準として PDF があります。<br>
+			しかし PDF はあくまで印刷を目的としたフォーマットです。<br>
+			印刷を目的としないドキュメントにおいては HTML が主流です。<br>
+		</p>
+		<p class="append">
+			例：技術系の文書 <a target="new" href="https://developer.mozilla.org/ja/">MDN web docs</a>, <a target="new"
+				href="https://docs.microsoft.com/ja-jp/">Microsoft Docs</a>
+		</p>
 
-			<div class="ind30px">
-				<h3>表現力の高さ</h3>
-				<div class="ind1em">
-					１．見やすい情報提供が容易<br>
-					<p class="append">
-						ハイパーテキストであるため、高度な構造化が可能で、見やすい情報提供が容易です。<br>
-						ローカルアプリからブラウザをURLで開いてヘルプ表示することも可能です。<br>
-					</p>
-					２．動画などのマルチメディアの使用が容易<br>
-					<p class="append">
-						インタラクティブな操作の提供、動画などのマルチメディアの使用が容易です。<br>
-					</p>
-					３．SNS や自社サイトとの連携が容易<br>
-					<p class="append">
-						インターネットとの親和性が高く、Twitter などの SNS や自社サイトとの連携ができます。<br>
-					</p>
-					４．段階的な導入が可能<br>
-					<p class="append">
-						表現力の向上は可能ではありますが、それは必要であるという意味ではありません。<br>
-						HTML を使うことは、伸びしろを持たせることが可能になるということです。<br>
-					</p>
-				</div>
-
-				<h3>採用する障壁の低さ</h3>
-				<div class="ind1em">
-					１．新たな調査・開発・購入コストが不要<br>
-					<p class="append">
-						自社サイトなどの開発で培われた WEB 制作技術や資産をそのまま応用できます。<br>
-						そのため、新たな調査・開発・購入コストは不要です。<br>
-					</p>
-					２．コストの見積もりが容易<br>
-					<p class="append">
-						自社サイトを外注されているという場合でも、その発注先などにそのまま発注できます。<br>
-						発注実績がありますので、コストの見積もりが容易です。<br>
-					</p>
-					３．自社のサーバ能力の増強が不要<br>
-					<p class="append">
-						表示させるコンテンツは利用者のマシンで稼働されます。<br>
-						そのため、自社のサーバ能力を増強する必要がありません。<br>
-					</p>
-				</div>
-
-				<h3>セキュリティ向上</h3>
-				<div class="ind1em">
-					１．脆弱性の発生する余地が少ない<br>
-					<p class="append">
-						HTTP サーバはコンテンツを解釈・実行しませんので機能が単純です。<br>
-						オープンソースとして公開することで、第三者のチェックにより、安全性を二重に担保します。<br>
-						したがって、脆弱性の発生する余地は少なく、発生時には迅速に対応可能であると言えます。<br>
-					</p>
-					２．ブラウザの脆弱性に対して代替手段が豊富<br>
-					<p class="append">
-						ビュアーであるブラウザは選択肢が多いため、別のブラウザを使えば安全です。<br>
-					</p>
-				</div>
-
+		<div class="ind30px">
+			<h3>表現力の高さ</h3>
+			<div class="ind1em">
+				１．柔軟な情報提供が容易です<br>
+				<p class="append">
+					ハイパーテキストであるため、読みやすい情報提供が容易です。<br>
+					ローカルアプリからブラウザをURLで開くことで、ヘルプとして利用することも可能です。<br>
+				</p>
+				２．動画など高度なマルチメディアが利用可能です<br>
+				<p class="append">
+					動画などのマルチメディアの使用や、インタラクティブな操作の提供が容易です。<br>
+				</p>
+				３．SNS や自社サイトとの連携が容易に行えます<br>
+				<p class="append">
+					インターネットとの親和性が高く、Twitter などの SNS や自社サイトとの連携ができます。<br>
+				</p>
+				４．将来性が期待できます<br>
+				<p class="append">
+					HTML を使うことで、最新の表現に対して伸びしろを持たせることが可能です。<br>
+				</p>
 			</div>
+
+			<h3>採用する障壁の低さ</h3>
+			<div class="ind1em">
+				１．新たな調査・開発・購入コストが不要です<br>
+				<p class="append">
+					自社サイトなどの開発で培われた WEB 制作技術や資産をそのまま応用できます。<br>
+					そのため、新たな調査・開発・購入コストは不要です。<br>
+				</p>
+				２．コストの見積もりが容易です<br>
+				<p class="append">
+					自社サイトを外注されているという場合でも、その発注先などにそのまま発注できます。<br>
+					発注実績がありますので、コストの見積もりが容易です。<br>
+				</p>
+				３．自社のサーバ能力の増強が不要です<br>
+				<p class="append">
+					表示させるコンテンツは利用者のマシンで稼働されます。<br>
+					そのため、自社のサーバ能力を増強する必要がありません。<br>
+				</p>
+			</div>
+
+			<h3>セキュリティの高さ</h3>
+			<div class="ind1em">
+				１．脆弱性の発生する余地がありません<br>
+				<p class="append">
+					HTTP サーバはコンテンツを解釈・実行しませんので機能が単純です。<br>
+					オープンソースとして公開することで、第三者のチェックにより、安全性を二重に担保します。<br>
+					したがって、脆弱性の発生する余地は少なく、発生時には迅速に対応可能であると言えます。<br>
+				</p>
+				２．ブラウザの脆弱性に対して代替手段が豊富です<br>
+				<p class="append">
+					ビュアーであるブラウザは選択肢が多いため、別のブラウザを使えば安全です。<br>
+				</p>
+			</div>
+
+		</div>
 
 
 		<a name="ZipHttpd"></a>
 		<h2>ZipHttpd の優れた点</h2>
 
+		<p class="ind1em">
+			ZipHttpd の優れた点についてご説明させていただきます。<br>
+		</p>
+
+		<div class="ind30px">
+			<h3>低コスト</h3>
 			<p class="ind1em">
-				ZipHttpd の優れた点についてご説明させていただきます。<br>
+				導入費用も機能制限も存在しません。<br>
+				<a href="static">ドキュメントを開発するための機能</a>を標準で装備しています。<br>
 			</p>
 
-			<div class="ind30px">
-				<h3>低コスト</h3>
-				<p class="ind1em">
-					導入費用も機能制限も存在しません。<br>
-					<a href="static">ドキュメントを開発するための機能</a>を標準で装備しています。<br>
-				</p>
+			<h3>手軽さ</h3>
+			<p class="ind1em">
+				レジストリや /etc などを使用しませんので、インストールする必要はありません。<br>
+				USBメモリなどポータブルなストレージにコピーしておくことで使用できます。<br>
+			</p>
+			<p class="ind1em">
+				１．<span class="strong">ドキュメントの一覧から目的のドキュメントを選択する。</span><br>
+				２．<span class="strong">ZipHttpd を起動（再起動）する。</span><br>
+			</p>
+			<p class="ind1em">
+				この２ステップでダウンロードされ、ブラウザから参照できるようになります。<br>
+				また、ドキュメントの更新時も自動的にダウンロードされ、手間をかけさせません。<br>
+			</p>
 
-				<h3>手軽さ</h3>
-				<p class="ind1em">
-					レジストリや /etc などを使用しませんので、インストールする必要はありません。<br>
-					USBメモリなどポータブルなストレージにコピーしておくことで使用できます。<br>
-				</p>
-				<p class="ind1em">
-					１．<span class="strong">zhget ツールで目的のドキュメントを新規／更新ダウンロードする。</span><br>
-					２．<span class="strong">ZipHttpd を起動（再起動）する。</span><br>
-				</p>
-				<p class="ind1em">もしくは</p>
-				<p class="ind1em">
-					１．<span class="strong">ダウンロードした zip ファイルを、<a href="#develop_directory">ドキュメントのディレクトリ</a>にコピーする。</span><br>
-					２．<span class="strong">ZipHttpd を起動（再起動）する。</span><br>
-				</p>
-				<p class="ind1em">
-					この２ステップで、解凍などの手間をかけずに、ブラウザから参照できるようになります。<br>
-				</p>
-				<p class="ind1em">
-					ドキュメント内に<a href="#config.json">マニフェストファイル</a>が同梱されていれば調整せずに使用できます。<br>
-					jardoc などマニフェストが無いドキュメントでは、<a href="#zhd.json">ドキュメント単位の設定ファイル</a>を手直しします。<br>
-				</p>
-				<p class="append">
-					調整とは、初期表示するページの指定などのドキュメント固有の挙動を定義することです。<br>
-				</p>
+			<h3>WebAPI</h3>
+			<p class="ind1em">
+				<a href="#WebAPI">WebAPI</a> による大容量データの保存が可能です。<br>
+			</p>
+			<p class="ind1em">
+				ストレージ API や IndexedDB API では<br>
+				・ 保存したデータをバックアップするのが困難である。<br>
+				・ 異なるブラウザ、Windows/Linux など異なるプラットフォームで共有される保証はない。<br>
+				・ ブラウザの都合で消去されることがある。<br>
+				といった制限があります。<br>
+			</p>
+			<p class="ind1em">
+				特にデータが消去されるのは避けられず、限定的な利用に留まらざるを得ません。<br>
+				しかし WebAPI ならば、データは利用者が管理することができます。<br>
+			</p>
+			<p class="append">
+				もちろん、IndexedDB API などを利用することを妨げるわけではありません。<br>
+				ドキュメントの開発者は採用するかどうかを選択できます。<br>
+			</p>
 
-				<h3>WebAPI</h3>
-				<p class="ind1em">
-					ビルトインな <a href="#WebAPI">WebAPI</a> を実装しています。<br>
-				</p>
-				<p class="ind1em">
-					ストレージ API や IndexedDB API では<br>
-					・ 保存したデータをバックアップするのが困難である。<br>
-					・ 異なるブラウザ、Windows/Linux など異なるプラットフォームで共有される保証はない。<br>
-					・ ブラウザの都合で消去されることがある。<br>
-					といった制限があります。<br>
-				</p>
-				<p class="ind1em">
-					特にデータが消去されるのは最悪で、そのため限定的な利用に留まらざるを得ません。<br>
-					しかし WebAPI ならば、データは利用者が管理することができます。<br>
-				</p>
-				<p class="append">
-					もちろん、IndexedDB API などを利用することを妨げるわけではありません。<br>
-					ドキュメントの開発者は採用するかどうか選択できます。<br>
-				</p>
+			<h3>可搬性</h3>
+			<p class="ind1em">
+				<a target="new" href="https://golang.org/">Go 言語</a>で記述していますので、Windows/Linux などプラットフォームを問いません。<br>
+				ポータブルなストレージにそれぞれの実行ファイルを入れておけば、持ち運んでの利用が可能です。<br>
+			</p>
+			<p class="append">
+				当面は利用者の絶対数から Windows での利用のみを想定しています。<br>
+				開発リソース上の問題で Windows 以外のプラットフォームでの公式なサポートまでは残念ながら手が回りません。<br>
+				linux などでは Go を導入して、Git で github からクローンして build スクリプトを実行してください。<br>
+				常駐させた場合の終了方法は、SIGINT か SIGKILL を送ってください。<br>
+			</p>
 
-				<h3>可搬性</h3>
-				<p class="ind1em">
-					<a target="new" href="https://golang.org/">Go 言語</a>で記述していますので、Windows/Linux などプラットフォームを問いません。<br>
-					ポータブルなストレージにそれぞれの実行ファイルを入れておけば、持ち運んでの利用が可能です。<br>
-				</p>
-				<p class="append">
-					当面は利用者の絶対数から Windows での利用のみを想定しています。<br>
-					開発リソース上の問題で Windows 以外のプラットフォームでの公式なサポートまでは残念ながら手が回りません。<br>
-					linux などでは Go を導入して、Git で github からクローンして build スクリプトを実行してください。<br>
-					常駐させた場合の終了方法は、SIGINT か SIGKILL を送ってください。<br>
-				</p>
-
-				<p class="ind1em">
-					別途インストールしなければならないファイルは基本的にはありません。<br>
-					ただし、アップデートは現状(2020/12)では手動で行います。<br>
-				</p>
-				<p class="append">
-					Windows では常駐や再起動させる方法に不便があります。<br>
-					必須ではありませんが、タスクトレイで常駐させるためのサポートツール launcher をご用意してあります。<br>
-				</p>
-			</div>
+			<p class="ind1em">
+				別途インストールしなければならないファイルは基本的にはありません。<br>
+				ただし、アップデートは現状(2020/12)では手動で行います。<br>
+			</p>
+			<p class="append">
+				Windows では常駐や再起動させる方法に不便があります。<br>
+				必須ではありませんが、タスクトレイで常駐させるためのサポートツール launcher をご用意してあります。<br>
+			</p>
+		</div>
 
 		<a name="other"></a>
 		<h2>ライセンスなど</h2>
@@ -212,16 +183,17 @@ wget("toc.json").then(info => {
 			<h3>条項</h3>
 			<p class="ind1em">
 				１．本ソフトウェアは無保証です。<br>
-				<p class="append">
-					ziphttpd.com は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。<br>
-				</p>
+			<p class="append">
+				ziphttpd.com
+				は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。<br>
+			</p>
 			</p>
 
 			<p class="ind1em">
 				２．再配布権は ziphttpd.com が保持します。<br>
-				<p class="append">
-					フォークやクローンなどによるリポジトリや自家製ビルドされたバイナリの再配布は公式としては許可しません。<br>
-				</p>
+			<p class="append">
+				フォークやクローンなどによるリポジトリや自家製ビルドされたバイナリの再配布は公式としては許可しません。<br>
+			</p>
 			</p>
 
 			<h3>広告機能</h3>
@@ -233,7 +205,7 @@ wget("toc.json").then(info => {
 				現在は以下のサンプル画像にある赤枠の部分が広告領域です。<br>
 			</p>
 			<p class="ind10">
-				<img src="img/sample-login.png" title="サンプル画面"></img><br>
+				<img src="img/sample-login.png" title="サンプル画面"><br>
 			</p>
 
 			<p class="ind1em">
@@ -243,7 +215,8 @@ wget("toc.json").then(info => {
 			<h3>機能的な問題に対する申し立て</h3>
 			<p class="ind1em">
 				機能的に問題がある場合には、GitHub の issue、pullリクエスト、<br>
-				ないしは<a target="new" href="https://www.ipa.go.jp/security/vuln/report/">脆弱性関連情報の届出受付</a>でのご連絡をお願いいたします。<br>
+				ないしは<a target="new"
+					href="https://www.ipa.go.jp/security/vuln/report/">脆弱性関連情報の届出受付</a>でのご連絡をお願いいたします。<br>
 			</p>
 
 			<h3>スポンサード</h3>
@@ -258,8 +231,9 @@ wget("toc.json").then(info => {
 
 		</div>
 
-		<hr/>
+		<hr />
 		copyright ZipHttpd.com 2020<br>
-</div>
-	</body>
+	</div>
+</body>
+
 </html>

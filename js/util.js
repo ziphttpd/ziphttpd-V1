@@ -12,6 +12,7 @@
  *	ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。 
  *	作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。
  */
+"use strict";
 
 // wget
 function wget(url) {
@@ -51,9 +52,8 @@ function createToc(holder, tocsobj, base) {
 	const filesdic = tocsobj.files;
 	const tocs = tocsobj.tocs;
 	holder.classList.add("toc");
-	const makelink = toc => {
+	const makelink = (file, toc) => {
 		// toc : {"file": "index", "anchor":"", "text": "概要"}
-		let file = filesdic[toc.file];
 		file = ((file===iam) ? "" : file) + "#";
 		const a = document.createElement("a");
 		a.setAttribute("href", file + toc.anchor);
@@ -61,10 +61,12 @@ function createToc(holder, tocsobj, base) {
 		return a;
 	};
 	tocs.forEach(block => {
+		// ファイル
+		const file = filesdic[block.file];
 		// トビック
 		const toc = document.createElement("div");
 		toc.classList.add("toc_h2");
-		toc.appendChild(makelink(block.topic));
+		toc.appendChild(makelink(file, block.topic));
 		toc.appendChild(document.createElement("br"));
 		holder.appendChild(toc);
 		if (block.chapter) {
@@ -72,7 +74,7 @@ function createToc(holder, tocsobj, base) {
 			block.chapter.forEach(toc => {
 				const subtoc = document.createElement("div");
 				subtoc.classList.add("toc_h3");
-				subtoc.appendChild(makelink(toc));
+				subtoc.appendChild(makelink(file, toc));
 				subtoc.appendChild(document.createElement("br"));
 				holder.appendChild(subtoc);
 			});
