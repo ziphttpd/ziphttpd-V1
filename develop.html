@@ -20,26 +20,29 @@
 			&nbsp;ZipHttpd<br>
 			&nbsp;ガイドブック<br>
 		</div>
-		<div class="version">ver 0.02&nbsp;(2020/12)</div>
-		<hr class="isohr" />
 
+		<div class="version"></div>
+		<hr class="isohr" />
+		<div class="transdiv">
+			<div id="google_translate_element"></div>
+		</div>
+		<hr class="isohr" />
 		<div id="toc">目次<br></div>
-
-		<hr class="isohr" />
-		<div id="google_translate_element"></div>
 
 	</div>
 	<div id="main">
 
 		<a name="develop"></a>
 		<h1>ドキュメント作成</h1>
-		<h2>ドキュメント作成ガイド</h2>
 
-		<div class="ind30px">
-			<h4>開発手順</h4>
+		<a name="ファイル制作"></a>
+		<h2>ファイル制作</h2>
+
+		<div class="ind1em">
 			<p class="ind1em">
 				ドキュメントを制作する手順は以下の通りです。<br>
 			</p>
+
 			<h3>１．ドキュメント開発環境を用意する</h3>
 			<p class="ind1em">
 				まずはドキュメントの名前を決めます。<br>
@@ -49,8 +52,8 @@
 
 			<h3>２．ZipHttpd を再起動する</h3>
 			<p class="ind1em">
-				再起動により static/localhost/prototype/{{任意の名前}} が作成されます。<br>
-				static/ はドキュメントの内容を利用者側で差し替えるためのディレクトリです。<br>
+				<a href="r#restart">再起動</a>すると static/localhost/prototype/{{任意の名前}} が作成されます。<br>
+				static/ はドキュメントの内容を<a href="r#static">利用者側で差し替えるためのディレクトリ</a>です。<br>
 				ここに置いたファイルはアクセス時に優先的に使用されます。<br>
 			</p>
 
@@ -58,17 +61,13 @@
 			<p class="ind1em">
 				２．で作成されたディレクトリに html や画像などのコンテンツを作成します。<br>
 			</p>
-			<p class="ind1em">
-				初期表示ページとして index.html が固定されています。<br>
-				ですので、まずは index.html から作成してください。<br>
-			</p>
 			<p class="append">
-				変更したい場合は docs/{{任意の名前}}.json の docroot 項目で設定してください。<br>
+				初期表示ページが設定されていませんので docs/{{任意の名前}}.json の docroot 項目で設定してください。<br>
 			</p>
 
 			<h3>４．ブラウザで動作を確認する</h3>
 			<p class="ind1em">
-				コンテンツを作成したらブラウザで確認できます。<br>
+				コンテンツはブラウザで確認できます。<br>
 				<a href="http://localhost:8823" target="top">トップページ</a>の localhost - prototype - {{任意の名前}} です。<br>
 			</p>
 			<p class="ind2em">
@@ -77,7 +76,7 @@
 
 			<h3>５．設定ファイルを作成する</h3>
 			<p class="ind1em">
-				設定ファイル ziphttpd/config.json を作成してください。<br>
+				<a href="r#config.json">マニフェストファイル</a>を ziphttpd/config.json に作成してください。<br>
 				配布されたドキュメントの各種設定を提供します。<br>
 			</p>
 
@@ -85,35 +84,305 @@
 			<p class="ind1em">
 				ディレクトリ以下を zip 圧縮すると、配布できるドキュメントが完成です。<br>
 			</p>
+		</div>
 
-			<h3>６．ドキュメントを署名する</h3>
+		<a name="ドキュメント署名"></a>
+		<h2>ドキュメント署名</h2>
+
+		<div class="ind1em">
+
+			<h3>１．ドキュメントを署名する</h3>
 			<p class="ind1em">
-				作成したドキュメントは https で公開します。<br>
-			</p>
-			<p class="ind1em">
-				設定ファイルの host 設定から SSL を使用して公開鍵と署名のファイルを取得します。<br>
-				そして、署名が無いドキュメントがドキュメントグループにある場合は警告します。<br>
-				SSL によりドキュメントの配布元の公開鍵と署名の正当性を担保するというコンセプトです。<br>
-			</p>
-			<p class="append">
-				DNS キャッシュポイズニングによるサイト偽装が脅威ですが、攻撃コスト的に見合わないだろうとの判断です。<br>
-				ドキュメント配布元を狙うよりも銀行サイトなど優先度の高い攻撃目標がいくらでもあります。<br>
-			</p>
-			<p class="ind1em">
-				以上の理由より<a href="#zhd.json">host設定</a>には、作成者が管理している WEB サーバを指定しておいてください。<br>
-				署名ツールなどは、MIT ライセンスで提供予定です。<br>
+				作成したドキュメントは公開するために署名する必要があります。<br>
+				そのためのツールが zhsign.exe です。<br>
+				zhsign は秘密鍵・公開鍵・サイト表明・カタログの雛形を生成します。<br>
+				秘密鍵は対象とするサイトのドキュメントを最初に署名しようとした時に作成されます。<br>
 			</p>
 
-			<p class="append">
-				zhget では配布サイトで公開されている公開鍵で署名を確認してダウンロードします。<br>
-				公開鍵の正当性を、SSL をもって担保とするコンセプトで、利用のためにドメインの取得は必須です。<br>
-				ドメインの維持費以外は GCP 無料枠や Amazon S3 などを使うことでコストは月で数円程度に抑えられます。<br>
+			<div class="half">ドキュメント署名
+				<pre><code class="json">D:\.ziphttpd&gt;zhsign
+  -dir string
+        configuration directory
+  -file string
+        document file
+  -group string
+        document group name
+  -host string
+        hostname (ex. ziphttpd.com)
+  -name string
+        document name
+
+D:\.ziphttpd&gt;zhsign -host www.xorver.com -group xorver -name document -file D:\.ziphttpd\static\localhost\www.xorver.com\xorver\xorver.zhd
+
+</code></pre>
+			</div>
+
+			<p class="ind1em">
+				コマンドを実行すると、署名対象ファイルの署名ファイルが作成されます。<br>
+				基本的に署名対象ファイルが（ホスト・グループ・ドキュメント名）に関連付けられます。<br>
+				関連付けはカタログファイルに記録されます。<br>
+				３つの名前はキーであり、更新時には署名対象ファイルが差し換わることになります。<br>
 			</p>
+
+			<p class="ind1em">
+				<table class="std">
+					<tr>
+						<th>フラグ</th>
+						<th>デフォルト</th>
+						<th>機能</th>
+						<th>その他</th>
+					</tr>
+					<tr>
+						<td>-dir</td>
+						<td>zhsign.exe の場所</td>
+						<td><a href="r#基準ディレクトリ">基準ディレクトリ</a></td>
+						<td>通常のセットアップでは指定する必要はありません。</td>
+					</tr>
+					<tr>
+						<td>-file</td>
+						<td>なし</td>
+						<td>署名対象ファイル</td>
+						<td>署名したいファイルのパスです。</td>
+					</tr>
+					<tr>
+						<td>-host</td>
+						<td>なし</td>
+						<td>ホスト名</td>
+						<td rowspan="3">トップページに表示されます。<br>またURLパスの先頭に使用されます。</td>
+					</tr>
+					<tr>
+						<td>-group</td>
+						<td>なし</td>
+						<td>ドキュメントグループ名</td>
+					</tr>
+					<tr>
+						<td>-name</td>
+						<td>なし</td>
+						<td>ドキュメント名<br></td>
+					</tr>
+				</table>
+			</p>
+
+			<h3>２．署名により作成されるファイル</h3>
+			<p class="ind1em">
+				署名により作成されたファイルは、ホストとして定義した https サーバで公開します。<br>
+				公開するファイルは、<a href="r#public">署名格納ディレクトリ</a>のホスト別のディレクトリ以下に生成されます。<br>
+				秘密鍵も作成されていますが、事故の防止もあり意識する必要が薄く、説明は割愛します。<br>
+			</p>
+			<p class="ind1em">
+				これらのファイルをサーバ上の https://ホスト/sig/ 以下でダウンロードできるようにしてください。<br>
+			</p>
+
+			<div class="ind1em">
+				<h4>公開鍵 (<span class="green">public.pem</span>)</h4>
+				<p class="ind1em">
+					 RSA-2048bit鍵です。<br>
+					 zhget は、公開鍵で検証してから store/ に保存します。<br>
+					 例) <a href="https://ziphttpd.com/sig/public.pem">https://ziphttpd.com/sig/public.pem</a><br>
+				</p>
+				<div class="half">公開鍵 (public.pem)<pre><code class="text">
+-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAyhUhG3HnHE25fVJvo7zAccKc2dR2qaFope1AWIfJisFxZ5Et9A55
+foeDMVoRgCFc9ujrjlfCDXOp2xyVgNTeUPvJ/jpd/x5okL0p0QoOKOoDXvQ3/g15
+cdw/2mcxg0UE0hsa9+1YZinwI9S5OD9RrXpkhK0Afbys9j4G4evp/JbHIM+uF7zp
+WtVcdBD9fUb8+a0olt1KgC0FFjjZoZJFxcnUFwdtbRrJnU3+seCbzKlUNDtuf89o
+Vcywml3t/o14Iy6jlLwYkIhOQdtZEOxJBailokeOLe56ltXCGnbTQTjgofieBJuM
++5WQ0Y6egnlX6j++NDtpNXfA7sbtq9Zg+wIDAQAB
+-----END RSA PUBLIC KEY-----
+				</code></pre></div>
+
+				<h4>公開鍵署名 (<span class="green">public.pem.zhsig</span>)</h4>
+				<p class="ind1em">
+					公開鍵のいわゆる自己署名です。<br>
+					これにより、公開鍵自身の正当性を証明しています。<br>
+					例) <a href="https://ziphttpd.com/sig/public.pem.zhsig">https://ziphttpd.com/sig/public.pem.zhsig</a><br>
+				</p>
+				<div class="half">公開鍵署名 (public.pem.zhsig)<pre><code class="json">{
+    "host": "ziphttpd.com",
+    "name": "public.pem",
+    "sig": "mSCHKV711axld/vxmh73qieAEgD2TAgc2l8vkhJlP68wa//yBphXOnM50pYep9Cjf9FOlTmZKT+SurKJiLkfUJbfBSCApQ7xp9Y+ZWeb4XTfpZucpRllKAlqxpaNO/dc3X70WQdNNdsKK5SxOzAp/i+Et2ekuXUZs4Oz4d+kcWS8CaXB8CC0KeVJ1BrY6CSddBlaK8NjYMvJfMUdWg9i/hm/9OUNG5FH6zRSwedl1LhygFzFNzInfcn645RoCSKAmaLpg3Jib9XOhrQFgRYqMD0HVpYpYI/NQ8MXJGwU8ZrdkIIiQdjYWn/vQylhfQs1WjGNaHck6T0F4Kn8SI8Q3Q==",
+    "url": "https://ziphttpd.com/sig/public.pem"
+}
+				</code></pre></div>
+
+				<h4>サイト表明 (<span class="green">site.json</span>)</h4>
+				<p class="ind1em">
+					サイト名の署名が書かれています。<br>
+					サイトが異なっていた場合には不正なサイトとして判断されます。<br>
+					第三者が海賊版のサイトに公開鍵を複製して公開するのを防ぐためです。<br>
+					zhget は、公開鍵で署名を検証して、正しければ公開鍵を store/ に保存する予定です。<br>
+					例) <a href="https://ziphttpd.com/sig/site.json">https://ziphttpd.com/sig/site.json</a><br>
+				</p>
+				<p class="append">
+					現在はこの検証はまだ組み込んでいません。<br>
+					ただ、海賊版が署名を付け直して再公開することは防げませんので効果は限定的です。<br>
+					もっと良い方法があれば変更されます。<br>
+				</p>
+				<div class="half">サイト表明 (site.json)<pre><code class="json">
+{"site":"yOLJbeNsAsAyaq8Q61owggeiVn1Fu4eRiQZfvY/Bxdea6N81m2Is5aNPw7H2ArOK26WzZyVqg7ovdgxPmzhZmgc7nYdOzKx0mBFlnGY/PivmvWrex5Or67BtqAlCXyPLXMPvCRy6ohGxN6amEX0KkCAMQ0nlhFWpo72SuLI6w3ZmhdgeY3mCLcGQUETohWvxs/EkN8/lJfPMj4/xED3rpoIfIyJ+ow6YlTjw+tBG/RqCVBxyoNJ20Js03y8p/IwZMm4oiCQTjSavLHYlrH8lNzWW6ZC5j2S/1ItC7QvNHo5hOjP3wZJ5+tKweo9DL7WkfLLBXdCbJVklL38F9bzyWg=="}
+				</code></pre></div>
+
+				<a name="カタログファイル"></a>
+				<h4>カタログファイル (<span class="green">catalog.json</span>)</h4>
+				<p class="ind1em">
+					公開するドキュメントの構成が書かれています。<br>
+					個々のドキュメントは署名を必要としますので、カタログには署名はありません。<br>
+					zhsign では雛形しか作成されませんので、テキストエディタで必要に応じて書き換えてください。<br>
+					例) <a href="https://ziphttpd.com/sig/catalog.json">https://ziphttpd.com/sig/catalog.json</a><br>
+				</p>
+				<div class="half">カタログファイル
+					<pre><code class="json">{
+    "description": "",
+    "groups": {
+        "windows": {
+            "description": "windows client",
+            "docs": {
+                "client": {
+                    "description": "client setup files",
+                    "title": "client"
+                }
+            },
+            "title": "client"
+        },
+        "ziphttpd-V1": {
+            "description": "ziphttpd のバージョン１を使用するための資料です。",
+            "docs": {
+                "ziphttpd": {
+                    "description": "ZipHttpd の公式ドキュメント",
+                    "title": "ZipHttpd ドキュメント"
+                }
+            },
+            "title": "ZipHttpd バージョン１"
+        }
+    }
+}
+					</code></pre>
+				</div>
+				<p class="ind1em">
+					これを <a href="r#Selector">Selector</a> で参照するとこうなります。<br>
+				</p>
+
+				<p class="miniimage">
+					<img src="img/selector_1.png" title="ドキュメント・ダウンロード選択"><br>
+				</p>
+				<p class="ind1em">
+					カタログファイルは、まだ暫定版です。<br>
+					バナーファイルなどプレゼンテーションの項目を検討中です。<br>
+				</p>
+
+				<h4>署名ファイル (<span class="green">ドキュメント名.zhsig</span>)</h4>
+				<p class="ind1em">
+					-name で指定したドキュメント名に拡張子がついてファイル名となります。<br>
+					例) <a href="https://ziphttpd.com/sig/ziphttpd.zhsig">https://ziphttpd.com/sig/ziphttpd.zhsig</a><br>
+				</p>
+
+				<div class="half">署名ファイル (ziphttpd.zhsig)<pre><code class="json">{
+    "host": "ziphttpd.com",
+    "name": "ziphttpd",
+    "sig": "JzSbRkEHVNLb8qj66g91AOVF/rB/bRUCG3m/JWrvqhUO+IYsWxAzZA5FMUAMGIujCao8D0mQdWPbn8zeJHOJzBTc8bDhx4WswLTdDigZc4s3AVYfE2N5owmywPzbIZt20shVaHH8LczRA+gQtllG0y5VWUm6kp6Aa8SZ4Z6Q19py3tdbYjjPpYpO1jj0q0aqPpE0n3QmHx7uZAbp0HiLVTEL4uhNMt1cwRq3nkNACMOI9ALnqbUhvn707HjmkByHlwC4OFaUwXRaer2+4pa3FQnSqltBP9fBCY/LWiEJfM2Rkzk/wJYQqERlfHai5AyZ6KAWr0cu52NePjZzNXDz7g==",
+    "url": "https://ziphttpd.com/sig/manual.0.02.zhd"
+}
+				</code></pre></div>
+
+				<p class="ind1em">
+					ドキュメントの url は書き換えても問題ありません。<br>
+					ZipHttpd では安価な <a href="https://aws.amazon.com/jp/free/storage/" target="amazons3">Amazon S3</a> を使用しています。<br> 
+				</p>
+
+				<div class="half">署名ファイル (ziphttpd.zhsig)<pre><code class="json">{
+    "host": "ziphttpd.com",
+    "name": "ziphttpd",
+    "sig": "JzSbRkEHVNLb8qj66g91AOVF/rB/bRUCG3m/JWrvqhUO+IYsWxAzZA5FMUAMGIujCao8D0mQdWPbn8zeJHOJzBTc8bDhx4WswLTdDigZc4s3AVYfE2N5owmywPzbIZt20shVaHH8LczRA+gQtllG0y5VWUm6kp6Aa8SZ4Z6Q19py3tdbYjjPpYpO1jj0q0aqPpE0n3QmHx7uZAbp0HiLVTEL4uhNMt1cwRq3nkNACMOI9ALnqbUhvn707HjmkByHlwC4OFaUwXRaer2+4pa3FQnSqltBP9fBCY/LWiEJfM2Rkzk/wJYQqERlfHai5AyZ6KAWr0cu52NePjZzNXDz7g==",
+    "url": "https://xorver.s3-ap-northeast-1.amazonaws.com/ZipHttpd/document/manual.0.02.zhd"
+}
+				</code></pre></div>
+
+			</div>
+		</div>
+
+		<a name="リポジトリ"></a>
+		<h2>リポジトリ</h2>
+		<div class="ind1em">
+			ZipHttpd というドキュメントのエコシステムにおいて、ハブとなるサービスがリポジトリです。<br>
+			このサービスは二個の WebAPI で実現しています。<br>
+
+			<h3>１．サイト一覧</h3>
+			<p class="ind1em">
+				<a href="https://ziphttpd.com/api/v1/list" target="list">https://ziphttpd.com/api/v1/list</a> において提供される情報です。<br>
+			</p>
+
+			<div class="half">サイト一覧<pre><code class="json">{"hosts":["www.xorver.com","ziphttpd.com"]}</code></pre></div>
+
+			<p class="ind1em">
+				これは、ドキュメントを提供しているサイトの一覧を入手することを目的とする WebAPI です。<br>
+				Selector はこの WebAPI にアクセスして稼働します。<br>
+			</p>
+
+			<h3>２．サイト登録</h3>
+			<p class="ind1em">
+				サイト一覧で返されるサイトに新規参入者はどうやって登録すれば良いでしょうか？<br>
+				その登録を司るのが、この WebAPI です。<br>
+				まずは<a href="r#ドキュメント署名">ドキュメント署名</a>で作成した署名などをサイトで公開しておきます。<br>
+				その後に、https://ziphttpd.com/api/v1/regist/ の後ろにサイト名をつけてアクセスします。<br>
+				それだけで、煩わしい課金やサインアップは不要で登録は完了します。<br>
+			</p>
+			<p class="append">
+				例) https://ziphttpd.com/api/v1/regist/www.xorver.com<br>
+			</p>
+			<p class="ind1em">
+				この API にアクセスすると、ziphttpd.com はそのサイトの公開鍵と署名にアクセスして確認します。<br>
+				確認ができた時、一覧にそのサイトは登録されます。<br>
+			</p>
+
+		</div>
+
+		<a name="ドキュメント取得"></a>
+		<h2>ドキュメント取得</h2>
+
+		<div class="ind1em">
+			ここまでは、ドキュメントを作成・公開する方法に関しての説明でした。<br>
+			この項では、どうやってドキュメントを取得するのかについて説明します。<br>
+			<br>
+			この説明は、機構のセキュリティをレビューする方向けの情報です。<br>
+			通常は気にする必要は特にありません。<br>
+
+			<h3>サイト (ホスト)</h3>
+			<p class="ind1em">
+				普通にウェブページを公開しているサーバです。<br>
+				利用者は、リポジトリで得たサイトとして参照します。<br>
+				そのサイトからの通信は https により改ざんが防止されます。<br>
+				まず、この機構(TSL)を基本インフラとして、公開鍵を配布します。<br>
+				したがって、https ではないサイトでのドキュメントの公開はできません。<br>
+			</p>
+			<p class="append">
+				https ではないサイトは chrome などでは保護されていないページとして警告されます。<br>
+				検索順位としても、大きく欠点として減点されています。<br>
+				ですから、https は事実上の標準であり、旧来の http で提供されるページは問題外とします。<br>
+			</p>
+			<p class="ind1em">
+			</p>
+
+			<h3>署名パス (<span class="green">https://xxxx.com/sig/</span>)</h3>
+			<p class="ind1em">
+				サイトの <span class="green">/sig</span> というパスですべてのファイルは公開します。<br>
+				sig/ 以下にディレクトリは作りません。このパスで全ては完結します。<br>
+				zhget は、この URL を参照します。<br>
+			</p>
+			<p class="append">
+				ファイルは、ダウンロードされると store/ホスト/ 以下のディレクトリに保存されます。<br>
+				ただし、署名の一致しないファイルは保存されません。<br>
+			</p>
+
+			<h3>カタログファイル</h3>
+			<p class="ind1em">
+				<a href="r#カタログファイル">カタログファイル</a>を読みだした利用者は、各ドキュメントのタイトルと説明でたどり着きます。<br>
+			</p>
+			
 		</div>
 
 		<hr />
-		copyright ZipHttpd.com 2020<br>
+		<span class="copyright"></span>
 	</div>
 </body>
 
-</html> 
+</html>

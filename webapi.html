@@ -20,58 +20,266 @@
 			&nbsp;ZipHttpd<br>
 			&nbsp;ガイドブック<br>
 		</div>
-		<div class="version">ver 0.02&nbsp;(2020/12)</div>
-		<hr class="isohr" />
 
+		<div class="version"></div>
+		<hr class="isohr" />
+		<div class="transdiv"><div id="google_translate_element"></div></div>
+		<hr class="isohr" />
 		<div id="toc">目次<br></div>
-
-		<hr class="isohr" />
-		<div id="google_translate_element"></div>
 
 	</div>
 	<div id="main">
 
-		<h1>WebAPI</h1>
 		<a name="WebAPI"></a>
-		<h2>WebAPI</h2>
+		<h1>WebAPI</h1>
+		<h2>ZipHttpd API</h2>
 
 		<div class="ind30px">
 
 			<div class="ind1em">
-				WebAPI は ZipHttpd にリクエストすることで JavaScript では実現できない効果を得るものです。<br>
+				ZipHttpd API にリクエストすることで JavaScript では実現できない効果を得られます。<br>
 			</div>
 
 			<a name="機能"></a>
 			<h3>機能</h3>
 			<p class="ind1em">
 				API-Ver.1 では、キーに対して値を記録する機能が実装されています。<br>
+				記録されたデータは<a href="dataInspector/dataInspector.html" target="dataInspector">データインスペクタ</a>でメンテナンスも可能です。<br>
+				利用している Bootstrap も同梱した版を<a href="dataInspector/dataInspector.zip">ここから保存して</a>ください。<br>
+				これをホストの<a href="r#static">静的ディレクトリ</a>に展開して dataInspector.html にアクセスすることで使うことができます。<br>
 			</p>
 			<p class="append">
-				WebAPI を呼びだすリファレンス実装として <a target="new" href="dataInspector/zhapi.js">zhapi.js</a> を用意してあります。<br>
-				WebAPI を呼びだすサンプルとして <a target="new" href="dataInspector/test/apitest.js">apitest.js</a> を用意してあります。<br>
+				ZipHttpd API を呼びだすリファレンス実装として <a target="new" href="dataInspector/zhapi.js">zhapi.js</a> を用意してあります。<br>
+				ZipHttpd API を呼びだすサンプルとして <a target="new" href="dataInspector/test/apitest.js">apitest.js</a> を用意してあります。<br>
 			</p>
-			<p class="ind1em">
-				構想中の API-Ver.2 では、<br>
-				・ 接続を保持して、プッシュ通知を行うウィンドウ間通信機能<br>
-				・ ドキュメント内のファイルをリストで取得する機能<br>
-				などを検討しています。<br>
-			</p>
-
 			<div class="ind1em">
-
-				<h4>(採用予定なし) ネットワーククライアント機能</h4>
+				<h4>検討中</h4>
+				<p class="ind1em">
+					構想中の API-Ver.2 では、<br>
+					・ 接続を保持して、プッシュ通知を行うウィンドウ間通信機能<br>
+					・ ドキュメント内のファイルをリストで取得する機能<br>
+					などを検討しています。<br>
+				</p>
+	
+				<h4>廃案</h4>
 				<p class="ind1em">
 					なお、ネットワーククライアント機能は ZipHttpd に実装する予定はありません。<br>
 					ネットワーク接続が脆弱性の温床となる可能性を危惧しているためです。<br>
 					ドキュメントの更新に関しては、別ツール zhget が担当します。<br>
 				</p>
+			</div>
+
+			<a name="API"></a>
+			<h3>API</h3>
+			<p class="ind1em">
+			</p>
+			<div class="ind1em">
+				<h4>アクセスオブジェクト</h4>
+				<p class="ind1em">
+					API を使用するには /api 以下に POST アクセスする必要があります。<br>
+					そのために <a href="dataInspector/zhapi.js" target="zhapi.js">zhapi.js</a> を提供しています。<br>
+					これをインポートした上で ZHAPI オブジェクトを作成します。<br>
+				</p>
+				<div class="half">呼び出しの定形処理<pre><code class="js">const zh = new ZHAPI('auto');
+zh.Noop().then(function(info) {...}).catch(function(error) {...});
+</code></pre></div>
+
+				<h4>ホルダー</h4>
+				<p class="ind1em">
+					定形処理では new ZHAPI(<span class="red">'auto'</span>); と引数を指定しています。<br>
+					この文字列はホルダー名といい、API でのデータ格納先を意味しています。<br>
+					ホルダー名は任意に決めることができ、いわばディレクトリに相当します。<br>
+				</p>
+				<p class="ind1em">
+					現在は暫定的な仕様であり、ホルダーの中に更にホルダーは作れません。<br>
+					将来的な拡張を見越して、ホルダー名に '/' の文字は使用しないようにして下さい。<br>
+				</p>
+				<p class="append">
+					主に <a href="dataInspector/dataInspector.html" target="dataInspector">dataInspector</a> の開発の都合です。<br>
+					また、トップに当たる '' ホルダーのデータも今の dataInspector ではメンテナンスできません。<br>
+				</p>
+
+				<h4>キー</h4>
+				<p class="ind1em">
+					更に一つ説明する事として、API ではキーという概念が存在しています。<br>
+					ホルダーがディレクトリならば、キーはファイルに相当します。<br>
+					キーに対してデータを読み書きすることができます。<br>
+				</p>
+
+				<h4>Promise</h4>
+				<p class="ind1em">
+					すべての API は <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="Promise">Promise</a> を返します。<br>
+					<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Using_promises" target="promise">チェーン</a>によって制御して下さい。<br>
+				</p>
+
+				<h4>戻り値</h4>
+				<p class="ind1em">
+					Promise のコールバック関数 function(info) {} の info には結果が戻されます。<br>
+					catch コールバックでの引数も同じ構造ですので、関数内で判定することも可能です。<br>
+				</p>
+				<p class="ind1em">
+					<table class="std">
+						<tr>
+							<th>プロパティ</th>
+							<th>概要</th>
+							<th>その他</th>
+						</tr>
+						<tr>
+							<td>api</td>
+							<td>API の種別</td>
+							<td>[noop|list|write|read|delete|dirs] のいずれかです。</td>
+						</tr>
+						<tr>
+							<td>holder</td>
+							<td>API のホルダー</td>
+							<td>ZHAPI 作成時に指定したホルダーです。</td>
+						</tr>
+						<tr>
+							<td>version</td>
+							<td>API のバージョン</td>
+							<td>ZHAPI のバージョンです。<br>
+								現在は必ず "1" が入っています。
+							</td>
+						</tr>
+						<tr>
+							<td>error</td>
+							<td>エラー</td>
+							<td>エラーが発生している時だけ設定されます。<br>
+								通信, API, 応答のJSONパースのそれぞれで発生します。
+							</td>
+						</tr>
+						<tr>
+							<td>items</td>
+							<td>呼び出し引数</td>
+							<td>JSON 文字列化してあります。</td>
+						</tr>
+						<tr>
+							<td>result</td>
+							<td>応答</td>
+							<td>文字列のままの応答です。</td>
+						</tr>
+						<tr>
+							<td>decoded</td>
+							<td>応答</td>
+							<td>result を JSON パースしたものです。</td>
+						</tr>
+						<tr>
+							<td>request</td>
+							<td>XMLHttpRequest</td>
+							<td>呼び出しで使用したものです。<br>
+								通信 API の変更で廃止される可能性があります。<br>
+								あくまでデバッグ時に利用して下さい。
+							</td>
+						</tr>
+					</table>
+					</p>
+		
+				<h4>Noop()</h4>
+				<p class="ind1em">
+					定形処理では zh.Noop() を最初に呼び出していますが、これは API を使う上で必須です。<br>
+					以降で説明しますが、<a href="r#ログイン">API のアクセスキーを取得するための認証</a>のための関数です。<br>
+					認証が済んでいる場合には、そのまま処理が続きます。<br>
+				</p>
+				<div class="half">Noop()<pre><code class="js">zh.Noop()
+.then(function(info) {
+	// info.items: {}
+	// info.result: null
+});
+</code></pre></div>
+
+				<h4>List()</h4>
+				<p class="ind1em">
+					引数無しで、キーの一覧を返します。<br>
+					戻り値は、その時点で格納されているキーの配列が返されます。<br>
+				</p>
+				<div class="half">List()<pre><code class="js">zh.List()
+.then(function(info) {
+	// info.items: {}
+	// info.result: ["item2", "item3"]
+});
+</code></pre></div>
+
+				<h4>Write()</h4>
+				<p class="ind1em">
+					キーと値によるオブジェクトを渡すことで、データを記録します。<br>
+					戻り値は、記録したキーの配列が返されます。<br>
+				</p>
+				<div class="half">Write()<pre><code class="js">zh.Write({'item2': 'writedata2', 'item3': 'writedata3'})
+.then(function(info) {
+	// info.items: {"item2":"writedata2","item3":"writedata3"}
+	// info.result: ["item2", "item3"]
+});
+</code></pre></div>
+
+				<h4>Read()</h4>
+				<p class="ind1em">
+					キーの配列を渡すことで、データを読み出します。<br>
+					戻り値は、キーと値によるオブジェクトが返されます。<br>
+					存在していないキーを指定しても、エラーにはなりません。<br>
+					存在していないキーの値は '' として返されます。<br>
+				</p>
+				<div class="half">Read()<pre><code class="js">zh.Read(["item1","item2"])
+.then(function(info, result) {
+	// info.items: ["item1","item2"]
+	// info.result: {"item1":"writedata1", "item2":""}
+});
+</code></pre></div>
+
+				<h4>Delete()</h4>
+				<p class="ind1em">
+					キーの配列を渡すことで、データを削除します。<br>
+					戻り値は、削除したキーの配列が返されます。<br>
+					存在していないキーを指定しても、エラーにはなりません。<br>
+					存在していなかったキーは戻り値には含まれません。<br>
+				</p>
+				<div class="half">Delete()<pre><code class="js">zh.Delete(["item1","xxxxx"])
+.then(function(info, result) {
+	// info.items: ["item1","xxxxx"]
+	// info.result: ["item1"]
+});
+</code></pre></div>
+
+				<h4>Dirs()</h4>
+				<p class="ind1em">
+					ホルダーの一覧を配列として取得します。<br>
+					現在は特殊なメンテナンス用 API です。<br>
+					ホルダーとして "" を指定した ZHAPI でのみ呼び出して下さい。<br>
+				</p>
+				<div class="half">Dirs()<pre><code class="js">const zh = new ZHAPI('');
+zh.Dirs()
+.then(function(info, result) {
+	// info.items: {}
+	// info.result: ["testdata"]
+});
+</code></pre></div>
+
+				<h4>実行サンプル</h4>
+				<p class="ind1em">
+					動作確認のスクリプトは、<a href="js/test/apitest.js" target="apitest.js">apitest.js</a>を参照して下さい。<br>
+					Promise はこのようにチェーンして使えます。<br>
+				</p>
+				<div class="half">apitest.js の結果<pre><code class="js">noop({}) : null
+list({}) : []
+write({"item1":"writedata1"}) : ["item1"]
+list({}) : ["item1"]
+read(["item1","item2"]) : {"item1":"writedata1", "item2":""}
+write({"item2":"writedata2","item3":"writedata3"}) : ["item2", "item3"]
+list({}) : ["item1", "item2", "item3"]
+read(["item1","item2","item3"]) : {"item1":"writedata1", "item2":"writedata2", "item3":"writedata3"}
+delete(["item1"]) : ["item1"]
+list({}) : ["item2", "item3"]
+delete(["item1","item2"]) : ["item2"]
+list({}) : ["item3"]
+delete(["item3"]) : ["item3"]
+list({}) : []
+</code></pre></div>
 
 			</div>
 
 			<a name="ログイン"></a>
 			<h3>ログイン</h3>
 			<p class="ind1em">
-				WebAPI の利用にはセキュリティのためログインを必要とします。<br>
+				ZipHttpd API の利用にはセキュリティのためログインを必要とします。<br>
 				悪意のあるドキュメントによるデータ窃盗や破壊の防止のためです。<br>
 				ログイン画面への遷移はホストごとに <a target="new" href="dataInspector/zhapi.js">zhapi.js</a> により自動的に行われます。<br>
 			</p>
@@ -118,8 +326,8 @@
 
 				<h4>概要</h4>
 				<p class="ind1em">
-					WebAPI の設計上の目標としてセンシティブな情報も保存できることを考慮しています。<br>
-					そのためには、他のホストのドキュメントからの WebAPI 実行を防止する仕掛けを持ちます。<br>
+					ZipHttpd API の設計上の目標としてセンシティブな情報も保存できることを考慮しています。<br>
+					そのためには、他のホストのドキュメントからの ZipHttpd API 実行を防止する仕掛けを持ちます。<br>
 					一般的な CSRF 対策とは少し事情が異なりますのでご注意ください。<br>
 				</p>
 
@@ -128,16 +336,17 @@
 					ドキュメントの所属するホストごとに異なるポートを使用します。<br>
 					別<a target="new"
 						href="https://developer.mozilla.org/ja/docs/Web/Security/Same-origin_policy#Definition_of_an_origin">オリジン</a>に属するページからの
-					WebAPI の実行は、無条件で失敗します。<br>
+					ZipHttpd API の実行は、無条件で失敗します。<br>
 				</p>
 				<p class="append">
-					<a target="new" href="https://developer.mozilla.org/ja/docs/Glossary/CORS">CORS</a>に従い、プリフライト（厳密には
-					POST 以外の全て）に対して単純にエラーを返しているからです。<br>
+					API は OPTION リクエスト（厳密には POST 以外）を受け付けません。<br>
+					ですので <a target="new" href="https://developer.mozilla.org/ja/docs/Glossary/CORS">CORS</a>
+					の、プリフライトには単純にエラー(403)が返されます。<br>
 				</p>
 
 				<p class="ind1em">
-					<a target="new" href="js/zhapi.js">zhapi.js</a> を改造する際には、セッション管理が以下のコンセプトで動いている事に注意してください。<br>
-					WebAPI は、<br>
+					<a target="new" href="js/zhapi.js">zhapi.js</a> を改造する際には、以下に注意してください。<br>
+					ZipHttpd API は、<br>
 					・ 同じオリジンから<br>
 					・ X-Requested-With ヘッダに正しい CSRF トークンが設定されている<br>
 					リクエストのみが実行可能です。<br>
@@ -147,16 +356,12 @@
 
 				<h4>ログインページ遷移</h4>
 				<p class="ind1em">
-					<a target="new" href="js/zhapi.js">zhapi.js</a> を読み込むと、トークンが取得されていない場合には、ログインページに自動遷移します。<br>
+					Noop() メソッドを呼び出すと、トークンが取得されていない場合にはログインページに自動遷移します。<br>
 				</p>
 
-				<div class="half">チェック部分 (<a target="new" href="js/zhapi.js">zhapi.js</a>)
-					<pre><code class="js">(function() {
-    const zh = new ZHAPI('auto');
-    zh.Noop().then(function(info) {}).catch(function(error) {});
-})();
-</code></pre>
-				</div>
+				<div class="half">呼び出しの定形処理<pre><code class="js">const zh = new ZHAPI('auto');
+zh.Noop().then(function(info) {...}).catch(function(error) {...});
+</code></pre></div>
 
 				<h4>ログイン結果</h4>
 				<p class="ind1em">
@@ -186,10 +391,8 @@
 					ストレージ API ならばポート番号が異なる別オリジンのドキュメントでは参照できません。<br>
 				</p>
 				<p class="append">
-					この保存場所は設定で<a target="newpage"
-						href="https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage">ローカルストレージ</a>を使用することもできますが、保持期間が永続的であることには留意してください。<br>
-					杞憂ではありますが、何らかの方法でオリジンを誤魔化す脆弱性があった場合など、トークンが漏洩する危険性が増します。<br>
-					そのため、上記の例でのxxxx.comホストのように無指定である場合には、セッションストレージを使用します。<br>
+					設定で<a href="https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage" target="newpage">ローカルストレージ</a>を使用することもできます。<br>
+					ただしトークンは再設定されますので ZipHttpd を再起動するまでしか有効にはなりません。<br>
 				</p>
 
 			</div>
@@ -197,7 +400,7 @@
 		</div>
 
 		<hr />
-		copyright ZipHttpd.com 2020<br>
+		<span class="copyright"></span>
 	</div>
 </body>
 

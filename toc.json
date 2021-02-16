@@ -1,7 +1,8 @@
 {
-	"version": "ver 0.03 (2021/02)"
+	"version": "ver 0.04 (2021/02)"
+	, "copyright": "copyright <a href='https://ziphttpd.com/' target='ziphttpd'>ZipHttpd.com</a> 2021"
 	, "files": {
-		"index": "index.html"
+		"index": "main.html"
 		, "overview": "overview.html"
 		, "guide": "guide.html"
 		, "document": "document.html"
@@ -11,49 +12,84 @@
 	, "tocs": [
 		{
 			"file": "index"
-			, "topic": {"file": "index", "anchor":"", "text": "はじめに"}
+			, "topic": {"anchor":"", "text": "はじめに"}
+			, "chapters": []
+			, "anchors": []
 		}
 
 		, {
 			"file": "overview"
-			, "topic": {"file": "overview", "anchor":"", "text": "概要"}
-			, "chapter": [
-				{"file": "overview", "anchor":"httpd", "text": "HTTP サーバの優れた点"}
-				, {"file": "overview", "anchor":"ZipHttpd", "text": "ZipHttpd の優れた点"}
-				, {"file": "overview", "anchor":"other", "text": "ライセンスなど"}
+			, "topic": {"anchor":"", "text": "概要"}
+			, "chapters": [
+				{"anchor":"httpd", "text": "HTTP サーバの優れた点"}
+				, {"anchor":"ZipHttpd", "text": "ZipHttpd の優れた点"}
+				, {"anchor":"other", "text": "ライセンスなど"}
 			]
+			, "anchors": []
 		}
 
 		, {
 			"file": "guide"
-			, "topic": {"file": "guide", "anchor":"use", "text": "利用ガイド"}
-			, "chapter": [
-				{"file": "guide", "anchor":"use_run", "text": "使用方法"}
-				, {"file": "guide", "anchor":"develop_directory", "text": "ディレクトリ構成"}
-				, {"file": "guide", "anchor":"develop_files", "text": "ファイル構成"}
+			, "topic": {"anchor":"use", "text": "利用ガイド"}
+			, "chapters": [
+				{"anchor":"use_run", "text": "使用方法"}
+				, {"anchor":"プログラム構成", "text": "プログラム構成"}
+			]
+			, "anchors": [
+				{"anchor":"Update", "text": "更新"}
+				, {"anchor":"Selector", "text": "Selector"}
+				, {"anchor":"Restart", "text": "再起動"}
 			]
 		}
 
 		, {
 			"file": "document"
-			, "topic": {"file": "document", "anchor":"document", "text": "ドキュメント"}
-			, "chapter": [
-				{"file": "document", "anchor":"ドキュメントモデル", "text": "ドキュメントモデル"}
-				, {"file": "document", "anchor":"固定リンク", "text": "固定リンク"}
+			, "topic": {"anchor":"document", "text": "ドキュメント"}
+			, "chapters": [
+				{"anchor":"ドキュメントモデル", "text": "ドキュメントモデル"}
+				, {"anchor":"固定リンク", "text": "固定リンク"}
+				, {"anchor":"develop_directory", "text": "ディレクトリ構成"}
+				, {"anchor":"develop_files", "text": "ファイル構成"}
+			]
+			, "anchors": [
+				{"anchor":"基準ディレクトリ", "text": "基準ディレクトリ"}
+				, {"anchor":"ホスト", "text": "ホスト"}
+				, {"anchor":"ドキュメントグループ", "text": "ドキュメントグループ"}
+				, {"anchor":"ドキュメント", "text": "ドキュメント"}
+				, {"anchor":"static", "text": "静的ファイルディレクトリ"}
+				, {"anchor":"private", "text": "秘密鍵格納ディレクトリ"}
+				, {"anchor":"public", "text": "署名格納ディレクトリ"}
+				, {"anchor":"ziphttpd.json", "text": "ZipHttpd 設定ファイル"}
+				, {"anchor":"zhd", "text": "ドキュメントファイル"}
+				, {"anchor":"zhd.json", "text": "ドキュメント設定ファイル"}
+				, {"anchor":"config.json", "text": "マニフェストファイル"}
 			]
 		}
 
 		, {
 			"file": "develop"
-			, "topic": {"file": "develop", "anchor":"develop", "text": "ドキュメント作成"}
+			, "topic": {"anchor":"develop", "text": "ドキュメント作成"}
+			, "chapters": [
+				{"anchor":"ファイル制作", "text": "ファイル制作"}
+				, {"anchor":"ドキュメント署名", "text": "ドキュメント署名"}
+				, {"anchor":"リポジトリ", "text": "リポジトリ"}
+				, {"anchor":"ドキュメント取得", "text": "ドキュメント取得"}
+			]
+			, "anchors": [
+				{"anchor":"カタログファイル", "text": "カタログファイル"}
+			]
 		}
 
 		, {
 			"file": "webapi"
-			, "topic": {"file": "webapi", "anchor":"WebAPI", "text": "WebAPI"}
-			, "chapter": [
-				{"file": "webapi", "anchor":"機能", "text": "機能"}
-				, {"file": "webapi", "anchor":"session", "text": "セッション管理"}
+			, "topic": {"anchor":"WebAPI", "text": "WebAPI"}
+			, "chapters": [
+				{"anchor":"機能", "text": "機能"}
+				, {"anchor":"API", "text": "API"}
+				, {"anchor":"ログイン", "text": "ログイン"}
+				, {"anchor":"session", "text": "セッション管理"}
+			]
+			, "anchors": [
 			]
 		}
 	]

@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>ZipHttpd ガイド - トップ</title>
+	<title>ZipHttpd ガイド</title>
 	<link rel="stylesheet" type="text/css" href="css/common.css">
 	<link rel="stylesheet" type="text/css" href="highlight/a11y-dark.css">
 	<script src="highlight/highlight.pack.js"></script>
@@ -14,72 +14,9 @@
 </head>
 
 <body>
-	<div id="side">
-		<div class="title">
-			<img class="minilogo" src="img/ZipHttpd.svg" />
-			&nbsp;ZipHttpd<br>
-			&nbsp;ガイドブック<br>
-		</div>
-		<div class="version">ver 0.02&nbsp;(2020/12)</div>
-		<hr class="isohr" />
-
-		<div id="toc">目次<br></div>
-
-		<hr class="isohr" />
-		<div id="google_translate_element"></div>
-
-	</div>
-	<div id="main">
-		<h1>はじめに</h1>
-
-		<p class="ind1em">
-			１．ZipHttpd はローカルで動かす WEB サーバです。<br>
-			HTML や画像などのコンテンツを zip に圧縮したファイルを用います。<br>
-			なお、自動で解凍されますので利用者は意識する必要はありません。<br>
-		</p>
-
-		<p class="append">
-			コンテンツを圧縮したファイルの規定の拡張子は zhd とします。<br>
-			zhd は単に zip ファイルの拡張子を変更したものです。<br>
-			なので、実質的に同じものである zhd, zip, jar は全て利用可能です。<br>
-			以降では、より一般的である zip で記述を統一します。<br>
-		</p>
-		<p class="append">
-			また、以降では画像などの構成要素をコンテンツとし、全体をドキュメントと呼ぶこととします。<br>
-		</p>
-
-		<p class="ind1em">
-			２．ZipHttpd では JavaScript で任意のテキストを保存するために WebAPI を実装しています。<br>
-			ブラウザ依存の local storage は chrome で 5 MB といった最大値制限があります。<br>
-			また、chrome/edge などのブラウザ間では引き継がれません。<br>
-			この WebAPI では数十MBを超えるようなデータでも保存できますし、ブラウザに依存しません。<br>
-		</p>
-
-		<p class="append">
-			このテキストは ZipHttpd のフォルダのapi/に置かれ、USBストレージなどに置くことで持ち運ぶことが可能です。<br>
-		</p>
-
-		<p class="ind1em">
-			３．ZipHttpd は<a target="new" href="https://golang.org/">Go 言語</a>で記述しているため、多数の OS で利用可能です。<br>
-			Go が利用できる OS は、Windows/Linux/iOS など多岐にわたります。
-			→ <a href="https://golang.org/doc/install" target="install">Go のインストール</a>
-			将来的には iPhone/Android などのモバイル端末での利用も検討しています。<br>
-		</p>
-
-		<p class="append">
-			開発リソース的に当分は Windows に注力せざるを得ません。<br>
-			Windows の利用者にはビルドなどのハードルは高いという判断です。<br>
-		</p>
-		<p class="append">
-			Windows 以外では自分でビルドして使用してください。<br>
-			$ git clone https://github.com/ziphttpd/ziphttpd<br>
-			$ go build -o ziphttpd cmd/main.go<br>
-			$ cp ziphttpd ~/.ziphttpd<br>
-		</p>
-
+		<a href="main.html">ガイドブック</a>
 		<hr />
-		copyright ZipHttpd.com 2020<br>
-	</div>
+		<span class="copyright"></span>
 </body>
 
 </html>

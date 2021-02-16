@@ -1,6 +1,10 @@
 #google_translate_element {
-	padding-left: 1em;
+	padding-left: 0em;
 	max-width: 70px;
+}
+.transdiv {
+	margin: 3px 1em 3px 1em;
+	height: 3em;
 }
 .goog-te-combo {
 	width: 100px;
@@ -26,7 +30,6 @@
 }
 #side a {
 	margin: 8px;
-	font-size: small;
 }
 #header {
 	position: fixed;
@@ -36,9 +39,6 @@
 	top: 0;
 	background: #edeff3;
 	z-index: 2;
-}
-#google_translate_element {
-	padding-left: 30px;
 }
 
 #main {
@@ -80,9 +80,14 @@
 }
 .toc_h2 {
 	margin: 8px 0px 0px 0em;
+	border-width: 1px 0px 0px 3px;
+	border-style: none;
+	border-color: tomato;
+	font-size: small;
 }
 .toc_h3 {
 	margin: 0px 0px 0px 1em;
+	font-size: x-small;
 }
 
 H1 {
@@ -142,20 +147,25 @@ a:any-link { color: blue; }
 }
 .ind1em {
 	padding-left: 1em;
+	padding-right: 1em;
 }
 .ind2em {
 	padding-left: 2em;
+	padding-right: 1em;
 }
 .ind10{
 	padding-left: 10em;
+	padding-right: 1em;
 }
 .ind30px {
 	padding-left: 30px;
+	padding-right: 1em;
 }
 .append {
 	padding-left: 30px;
 	font-size: small;
 	color: gray;
+	padding-right: 1em;
 }
 .half {
 	width: 40em;
@@ -178,7 +188,6 @@ video {
 
 .strong {
 	font-weight: bolder;
-	font-size: large;
 }
 table.std{
 	border: 2px black solid;
@@ -188,6 +197,7 @@ table.std{
 table.std th {
 	border: 1px black solid;
 	border-spacing: 2px;
+	background-color: aquamarine;
 }
 table.std td {
 	border: 1px black solid;
@@ -195,8 +205,15 @@ table.std td {
 	padding: 4px;
 	font-size: small;
 }
+
 .red {
 	color: red;
+}
+.green {
+	color: green;
+}
+.yellow {
+	color: yellow;
 }
 
 

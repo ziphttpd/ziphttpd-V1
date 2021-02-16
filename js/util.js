@@ -69,9 +69,9 @@ function createToc(holder, tocsobj, base) {
 		toc.appendChild(makelink(file, block.topic));
 		toc.appendChild(document.createElement("br"));
 		holder.appendChild(toc);
-		if (block.chapter) {
+		if (block.chapters) {
 			// チャプター
-			block.chapter.forEach(toc => {
+			block.chapters.forEach(toc => {
 				const subtoc = document.createElement("div");
 				subtoc.classList.add("toc_h3");
 				subtoc.appendChild(makelink(file, toc));
@@ -79,6 +79,48 @@ function createToc(holder, tocsobj, base) {
 				holder.appendChild(subtoc);
 			});
 		}
+	});
+	return tocsobj;
+}
+
+// リンク修正
+function linkRewriter(tocsobj, base) {
+	const pathlen = (location.origin + base).length;
+	const ahrefs = document.querySelectorAll("a[href]");
+	const filesdic = tocsobj.files;
+	const tocs = tocsobj.tocs;
+	// アンカー - ファイルの辞書
+	const anchors = {};
+	tocs.forEach(toc => {
+		const file = filesdic[toc.file];
+		if (toc.topic) {
+			const anchor = toc.topic;
+			anchors[anchor.anchor] = file;
+		}
+		if (toc.chapters) {
+			toc.chapters.forEach(elem => {
+				anchors[elem.anchor] = file;
+			});
+		}
+		if (toc.anchors) {
+			toc.anchors.forEach(elem => {
+				anchors[elem.anchor] = file;
+			});
+		}
+	});
+	ahrefs.forEach(ahref => {
+		const elems = ahref.href.split("#");
+		if (elems.length==1) {
+			// 外部リンク
+			return;
+		}
+		const iam = elems[0].substr(pathlen);
+		if (iam != "r") {
+			// rewrite 対象でない
+			return;
+		}
+		const a = decodeURI(elems[1]);
+		ahref.href = anchors[a] + "#" + elems[1];
 	});
 }
 

@@ -20,13 +20,14 @@
 			&nbsp;ZipHttpd<br>
 			&nbsp;ガイドブック<br>
 		</div>
-		<div class="version">ver 0.02&nbsp;(2020/12)</div>
-		<hr class="isohr" />
 
+		<div class="version"></div>
+		<hr class="isohr" />
+		<div class="transdiv">
+			<div id="google_translate_element"></div>
+		</div>
+		<hr class="isohr" />
 		<div id="toc">目次<br></div>
-
-		<hr class="isohr" />
-		<div id="google_translate_element"></div>
 
 	</div>
 	<div id="main">
@@ -37,26 +38,35 @@
 		<h2>ドキュメントモデル</h2>
 		<div class="ind30px">
 
-			<a href="#zhd.json">ドキュメント設定ファイル</a>で設定する階層構造です。<br>
+			<p class="ind1em">
+				まずは使用する概念について定義しておきます。<br>
+				階層構造としてホスト、ドキュメントグループ、ドキュメントの順に包含されます。<br>
+			</p>
+			<p class="append">
+				docs/ に配置した場合<a href="r#config.json">マニフェストファイル</a>から読み取られます。<br>
+				リポジトリから配布された場合には、カタログファイルから読み取られます。<br>
+			</p>
 
 			<a name="ホスト"></a>
 			<h3>ホスト</h3>
 			<p class="ind1em">
-				複数のドキュメントグループを登録する先です。<br>
-				docs/ 以下にコピーしたドキュメントは localhost ホストに登録されます。<br>
-				selector ツールでダウンロードしたドキュメントは、配布元のホストで登録されます。<br>
+				複数のドキュメントグループを包含する層です。<br>
+				docs/ 以下にあるドキュメントは localhost ホストとして扱われます。<br>
+				selector ツールでダウンロードしたドキュメントは、配布元のホストとなります。<br>
 			</p>
 			<p class="append">
-				<a href="#zhd.json">ドキュメント設定ファイル</a>でホストを記述できますが無意味です。<br>
-				これは、悪意を持った製作者が第三者のホストを名乗ることが可能になるためです。<br>
+				結論として<a href="r#config.json">マニフェストファイル</a>でのホスト設定はあまり重要視されません。<br>
+				悪意を持った製作者が、第三者のホストを名乗ることが可能になってしまうためです。<br>
 			</p>
 
+			<a name="ドキュメントグループ"></a>
 			<h3>ドキュメントグループ</h3>
 			<p class="ind1em">
 				複数のドキュメントをグループ化するものです。<br>
-				例えば製品のバージョンごとにドキュメントを管理するなどの目的を想定してあります。<br>
+				例えば製品ごとにドキュメントを管理するなどの目的のためです。<br>
 			</p>
 
+			<a name="ドキュメント"></a>
 			<h3>ドキュメント</h3>
 			<p class="ind1em">
 				一つの zip ファイルです。<br>
@@ -69,22 +79,341 @@
 
 		<div class="ind30px">
 			<p class="ind1em">
-				ホスト別のドキュメントは、同じポートで稼働します。<br>
-				別のポートでアクセスしても正しいポートにリダイレクトされます。<br>
-				そのため、ブラウザでブックマークしたドキュメントも正しく機能します。<br>
-				外部アプリから特定のドキュメントを開く時には、代表ポート 8823 を用いてください。<br>
+				ホスト別のドキュメントは、ホスト別のポート (58823～) で稼働します。<br>
+			</p>
+			<p class="ind1em">
+				困るのはポート番号は自動的にに割り振るため事前には推測できない事です。<br>
+				そこで別のポートでアクセスしても正しいポートにリダイレクトするようになっています。<br>
+				このリダイレクトにより、ブラウザのブックマークからでも正しく表示できます。<br>
+				外部アプリから特定のドキュメントを開く時には、代表ポート (8823) を用いてください。<br>
 			</p>
 
-			<div class="half">ヘルプ表示の例
-				<pre><code class="cs">var URL = "http://localhost:8823/ホスト/グループ/ドキュメント/index.html#トピック";
-System.Diagnostics.Process.Start(URL);<br>
+			<div class="half">外部アプリでのヘルプ表示の実装例 (C#)
+				<pre><code class="cs">var topicURL = "http://localhost:8823/ホスト/グループ/ドキュメント/index.html#トピック";
+System.Diagnostics.Process.Start(topicURL);<br>
+</code></pre>
+			</div>
+
+		</div>
+
+		<a name="develop_directory"></a>
+		<h2>ディレクトリ構成</h2>
+
+		<div class="ind30px">
+
+			<a name="基準ディレクトリ"></a>
+			<h3>基準ディレクトリ</h3>
+			<p class="ind1em">
+				ZipHttpd の実行ファイルを置いたディレクトリです。<br>
+				ここを基準として各種のファイルを置きます。<br>
+			</p>
+			<p class="ind1em">
+				レジストリなどの、このディレクトリ以外のディスク領域は参照しません。<br>
+				このディレクトリは USB などに置くことで、違う PC に持っていっても使用できます。<br>
+				Windows 版、UNIX 版の実行ファイルを置くことでマルチプラットフォームでも動かせます。<br>
+			</p>
+
+			<h3>ドキュメントディレクトリ (docs/)</h3>
+			<p class="ind1em">
+				手動で zip ファイルを読み込ませる場合に置くためのディレクトリです。<br>
+			</p>
+			<p class="ind1em">
+				ZipHttpd を起動すると各 zip ファイルに対応した json ファイルが生成されます。<br>
+				これは<a href="r#zhd.json">ドキュメント単位の設定ファイル</a>です。<br>
+			</p>
+
+			<h3>ログディレクトリ (log/)</h3>
+			<p class="ind1em">
+				実行時ログ ziphttpd.log を出力するディレクトリです。<br>
+			</p>
+			<p class="append">
+				実行時引数 -log で特定ディレクトリを指定できます。<br>
+				どうしても /var/log 以下など別ディレクトリにログを出力させたい場合などに指定します。<br>
+			</p>
+			<div class="half">ログ
+				<pre><code class="text">2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/main.go:50: [INFO] ---- server start ----
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:35: [INFO] create server:prototype.com
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:48: [INFO] run server:prototype.com, port:58823
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:35: [INFO] create server:system
+2020/05/26 03:18:07 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:48: [INFO] run server:system, port:8823
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/main.go:96: [INFO] ---- server stop ----
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/main.go:73: [INFO] signal: interrupt
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:65: [WARN] server:system : accept tcp [::]:8823: use of closed network connection
+2020/05/26 03:18:10 C:/xorvercom/ziphttpd/cmd/internal/httpd/server.go:65: [WARN] server:prototype.com : accept tcp [::]:58823: use of closed network connection
+</code></pre>
+			</div>
+
+			<p class="ind1em">
+				現時点ではローテーションや圧縮などは行っていません。<br>
+				必要なら削除してください。<br>
+			</p>
+
+			<h3>一般 API データディレクトリ (api/)</h3>
+			<p class="ind1em">
+				<a href="r#WebAPI">WebAPI</a> で登録したデータが格納されるディレクトリです。<br>
+				api/ホスト名/ に格納されます。<br>
+			</p>
+
+			<h3>システム API データディレクトリ (system/)</h3>
+			<p class="ind1em">
+				system ドキュメントグループが WebAPI で使用する<strong>予定</strong>です。<br>
+				ドキュメントに対する API も使用できるようにする<strong>想定</strong>です。<br>
+				そのため念のために隔離しましたが、<strong>現時点ではまだ使用していません</strong>。<br>
+			</p>
+
+			<a name="store"></a>
+			<h3>ダウンロードディレクトリ (store/)</h3>
+			<p class="ind1em">
+				リポジトリからダウンロードされたドキュメント用のディレクトリです。<br>
+				各ホストごとに store/ホスト名/ が作られます。<br>
+				各ドキュメントごとに store/ホスト名/ドキュメント名/ が作られます。<br>
+			</p>
+			<p class="append">
+				グループ単位のディレクトリが存在しないのは配布のための規約の都合です。<br>
+			</p>
+
+			<a name="static"></a>
+			<h3>静的ファイルディレクトリ (static/)</h3>
+			<p class="ind1em">
+				ドキュメント開発作業用のディレクトリです。<br>
+				各ドキュメントごとに static/ドキュメントグループ名/ドキュメント名/ が作られます。<br>
+			</p>
+			<p class="ind1em">
+				ここに置かれたファイルは zip ファイル内のファイルよりも優先的に読み出されます。<br>
+				また、ファイルを更新すると次の読み込みで即座に反映されます。<br>
+				ドキュメントの作成時にはここで編集作業を行って、ブラウザで確認します。<br>
+			</p>
+			<p class="ind1em">
+				リポジトリからダウンロードしたドキュメントにパッチを当てることもできます。<br>
+				<span class="strong">更新版をダウンロードしても静的ファイルが読み出されるため、利用時には注意してください。</span><br>
+				ドキュメントからは自分のディレクトリの外は参照されません。<br>
+			</p>
+
+			<a name="private"></a>
+			<h3>秘密鍵格納ディレクトリ (private/)</h3>
+			<p class="ind1em">
+				ドキュメントを公開する場合は署名によって改ざんを防止します。<br>
+				署名と公開鍵を作成するため、サイトごとの秘密鍵が必要になります。<br>
+				zhsign ツールは、private/ 以下に秘密鍵を生成します。<br>
+				<strong class="red">このディレクトリの下にあるファイルは直接に触る事はありません。</strong><br>
+			</p>
+
+			<a name="public"></a>
+			<h3>署名格納ディレクトリ (public/)</h3>
+			<p class="ind1em">
+				zhsign ツールが署名と公開鍵を出力するディレクトリです。<br>
+			</p>
+		</div>
+
+		<a name="develop_files"></a>
+		<h2>ファイル構成</h2>
+
+		<div class="ind30px">
+			この項では、ZipHttpd で使われている各種の設定ファイルについて説明します。<br>
+
+			<a name="ziphttpd.json"></a>
+			<h3>ZipHttpd 設定ファイル (ziphttpd.json)</h3>
+			<p class="ind1em">
+				ZipHttpd.exe と同じ場所に置いて、サーバとしての動作を設定します。<br>
+				<a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types" target="mdn">コンテンツタイプ</a>のデフォルト値が記述されています。<br>
+			</p>
+
+			<div class="half">ziphttpd.json の例
+				<pre><code class="json">{
+	"contenttype": {
+		"html,htm": "text/html",
+		"js": "text/javascript",
+		"json": "text/json",
+		"css": "text/css",
+		"txt": "text/plain",
+		"md": "text/markdown",
+		"bmp": "image/bmp",
+		"gif": "image/gif",
+		"ico": "image/ico",
+		"jpg,jpg,jpeg,jfif,pjpeg,pjp": "image/jpeg",
+		"png": "image/png",
+		"svg": "image/svg+xml",
+		"endterminator": null
+	},
+	"endterminator": null
+}
+</code></pre>
+			</div>
+
+			<p class="ind1em">
+				ここに記述されていない拡張子のファイルへのリンクは、バイナリファイルとして扱われます。<br>
+				<a href="r#config.json">マニフェストファイル</a>の設定値が優先されます。<br>
+				コンテンツタイプはドキュメントの作成者が設定することをお勧めします。<br>
+			</p>
+
+			<a name="zhd"></a>
+			<h3>ドキュメントファイル</h3>
+			<p class="ind1em">
+				ドキュメントである zip フォーマットのファイルです。<br>
+				拡張子として zip, jar も使用できますが、標準の拡張子として zhd が推奨されます。<br>
+				将来的にはトップページでは拡張子でフィルタできるようにする予定です。<br>
+				これはリソースのみのファイルと区別するためです。<br>
+				動画など基本的に更新されにくいファイルは zip として配布してください。<br>
+			</p>
+			<p class="ind1em">
+				ドキュメントのファイル名とドキュメントの名称は別物です。<br>
+				更新ドキュメントは旧ドキュメントとは別のファイル名で公開してください。<br>
+				同じファイル名ではマニフェストからドキュメント設定ファイルが再作成されません。<br>
+				通常はバージョンを付与したファイル名で作成されていることを意図しています。<br>
+				そのためのドキュメント名称です。<br>
+			</p>
+
+			<a name="zhd.json"></a>
+			<h3>ドキュメント設定ファイル</h3>
+			<p class="ind1em">
+				ドキュメントファイルの拡張子を json に置き換えたファイルです。<br>
+				<a href="r#config.json">マニフェストファイル</a>で設定された内容で作成されます。<br>
+				マニフェストファイルが入ってない場合には path と name だけが設定されます。<br>
+				ドキュメントが自動更新された時にも、マニフェストから再作成されます。<br>
+				それにより、追加されたコンテンツタイプなどの設定変更が反映されます。<br>
+			</p>
+
+			<div class="half">最小限のドキュメント設定ファイル例 (docs/任意の名前.json)
+				<pre><code class="json">{
+	"name": "任意の名称",
+	"path": "任意の名称.zip"
+}
+</code></pre>
+			</div>
+
+			<p class="ind1em">
+			<table class="std">
+				<tr>
+					<th>キー</th>
+					<th>デフォルト</th>
+					<th>機能</th>
+					<th>その他</th>
+				</tr>
+				<tr>
+					<td>path</td>
+					<td>zip ファイル名</td>
+					<td>zip ファイル名</td>
+					<td>絶対パスで記述可能。</td>
+				</tr>
+				<tr>
+					<td>docgroup</td>
+					<td>"common"</td>
+					<td>ドキュメントグループ名</td>
+					<td rowspan="2">トップページに表示されます。<br>またURLパスの先頭に使用されます。</td>
+				</tr>
+				<tr>
+					<td>name</td>
+					<td>zip ベース名</td>
+					<td>ドキュメント名<br></td>
+				</tr>
+				<tr>
+					<td>docroot</td>
+					<td>なし</td>
+					<td>初期表示ページ</td>
+					<td>トップからのリンクで開くページです。</td>
+				</tr>
+				<tr>
+					<td>contentencoding</td>
+					<td>"utf-8"</td>
+					<td>Content-Encoding</td>
+					<td>テキストの文字エンコーディングです。</td>
+				</tr>
+				<tr>
+					<td>contenttype</td>
+					<td>なし</td>
+					<td>Content-Type</td>
+					<td>拡張子別の MIME タイプを記述します。<br>指定しない場合、ZipHttpd 設定ファイルを参照します。</td>
+				</tr>
+				<tr>
+					<td>host</td>
+					<td>なし</td>
+					<td>配布元のホスト名</td>
+					<td>将来的に署名や更新で使用します。<a href="r#ドキュメントグループ署名">→ 参照</a></td>
+				</tr>
+			</table>
+			</p>
+			<p class="append">
+				同じドキュメントグループ名で同じドキュメント名を持つドキュメントが存在した場合、動作は不定です。<br>
+			</p>
+
+			<h4>設定の修正</h4>
+			<p class="ind1em">
+				zip ドキュメントはシフトJISなどの文字みーコードで記述されている場合があります。<br>
+				ZipHttpd はデフォルトで UTF-8 として扱いますが、文字化けが発生してしまいます。<br>
+				その場合に、contentencoding で文字コードを設定します。<br>
+				また、最初に表示されるべきページもまちまちですので設定します。<br>
+			</p>
+			<p class="append">
+				修正時には、項目の区切りの <code>,</code> を入れ忘れたり、最後の項目の後ろに入れたりするミスが頻発します。<br>
+				そうなると、読み込むことができません。<br>
+				困った場合は <a href="https://jsonlint.com/" target="jsonlint.com">jsonlint.com</a> などでチェックしてください。<br>
+			</p>
+
+			<div class="half">ドキュメント設定ファイルの修正例
+				<pre><code class="json">{
+	"name": "任意の名称",
+	"path": "任意の名称.zip",
+	"contentencoding": "Shift_JIS",
+	"docroot": "start.html"
+}
+</code></pre>
+			</div>
+
+			<a name="config.json"></a>
+			<h3>マニフェストファイル</h3>
+			<p class="ind1em">
+				ドキュメントファイル内に入れておく ziphttpd/config.json という固定の名称のファイルです。<br>
+				これを元に<a href="r#zhd.json">ドキュメント設定ファイル</a>が生成されます。<br>
+			</p>
+
+			<div class="half">docs/prototype.zip/ziphttpd/config.json
+				<pre><code class="json">{
+    "name": "prototype",
+    "docgroup": "prototype.com",
+    "host": "prototype.com",
+    "contentencoding": "utf-8",
+    "docroot": "index.html",
+    "contenttype": {
+        "html,htm": "text/html",
+        "js": "text/javascript",
+        "css": "text/css",
+        "png": "image/png",
+        "ico": "image/icon",
+        "svg": "image/svg+xml"
+    },
+    "usestaticfiles": true
+}
+</code></pre>
+			</div>
+
+			<p class="ind1em">
+				参考例に対応したドキュメントの設定ファイルは以下のように自動設定されます。<br>
+			</p>
+
+			<div class="half">docs/prototype.json
+				<pre><code class="json">{
+	"contentencoding": "utf-8",
+	"contenttype": {
+		"css": "text/css",
+		"html,htm": "text/html",
+		"ico": "image/icon",
+		"js": "text/javascript",
+		"png": "image/png",
+		"svg": "image/svg+xml"
+	},
+	"docgroup": "prototype.com",
+	"docroot": "index.html",
+	"host": "prototype.com",
+	"name": "prototype",
+	"path": "prototype.zip"
+}
 </code></pre>
 			</div>
 
 		</div>
 
 		<hr />
-		copyright ZipHttpd.com 2020<br>
+		<span class="copyright"></span>
 	</div>
 </body>
 
