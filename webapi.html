@@ -45,7 +45,7 @@
 			<p class="ind1em">
 				API-Ver.1 では、キーに対して値を記録する機能が実装されています。<br>
 				記録されたデータは<a href="dataInspector/dataInspector.html" target="dataInspector">データインスペクタ</a>でメンテナンスも可能です。<br>
-				利用している Bootstrap も同梱した版を<a href="dataInspector/dataInspector.zip">ここから保存して</a>ください。<br>
+				利用している Bootstrap も同梱した版を<a href="files/dataInspector.zip">ここから保存して</a>ください。<br>
 				これをホストの<a href="r#static">静的ディレクトリ</a>に展開して dataInspector.html にアクセスすることで使うことができます。<br>
 			</p>
 			<p class="append">
@@ -84,6 +84,33 @@
 zh.Noop().then(function(info) {...}).catch(function(error) {...});
 </code></pre></div>
 
+				<h4>Promise</h4>
+				<p class="ind1em">
+					すべての API は <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="Promise">Promise</a> を返します。<br>
+					<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Using_promises" target="promise">チェーン</a>によって制御して下さい。<br>
+				</p>
+
+				<h4>実行サンプル</h4>
+				<p class="ind1em">
+					動作確認のスクリプトは、<a href="js/test/apitest.js" target="apitest.js">apitest.js</a>を参照して下さい。<br>
+					Promise はこのようにチェーンして使えます。<br>
+				</p>
+				<div class="half">apitest.js の結果<pre><code class="js">noop({}) : null
+list({}) : []
+write({"item1":"writedata1"}) : ["item1"]
+list({}) : ["item1"]
+read(["item1","item2"]) : {"item1":"writedata1", "item2":""}
+write({"item2":"writedata2","item3":"writedata3"}) : ["item2", "item3"]
+list({}) : ["item1", "item2", "item3"]
+read(["item1","item2","item3"]) : {"item1":"writedata1", "item2":"writedata2", "item3":"writedata3"}
+delete(["item1"]) : ["item1"]
+list({}) : ["item2", "item3"]
+delete(["item1","item2"]) : ["item2"]
+list({}) : ["item3"]
+delete(["item3"]) : ["item3"]
+list({}) : []
+</code></pre></div>
+
 				<h4>ホルダー</h4>
 				<p class="ind1em">
 					定形処理では new ZHAPI(<span class="red">'auto'</span>); と引数を指定しています。<br>
@@ -104,12 +131,6 @@ zh.Noop().then(function(info) {...}).catch(function(error) {...});
 					更に一つ説明する事として、API ではキーという概念が存在しています。<br>
 					ホルダーがディレクトリならば、キーはファイルに相当します。<br>
 					キーに対してデータを読み書きすることができます。<br>
-				</p>
-
-				<h4>Promise</h4>
-				<p class="ind1em">
-					すべての API は <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="Promise">Promise</a> を返します。<br>
-					<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Guide/Using_promises" target="promise">チェーン</a>によって制御して下さい。<br>
 				</p>
 
 				<h4>戻り値</h4>
@@ -251,27 +272,6 @@ zh.Dirs()
 	// info.items: {}
 	// info.result: ["testdata"]
 });
-</code></pre></div>
-
-				<h4>実行サンプル</h4>
-				<p class="ind1em">
-					動作確認のスクリプトは、<a href="js/test/apitest.js" target="apitest.js">apitest.js</a>を参照して下さい。<br>
-					Promise はこのようにチェーンして使えます。<br>
-				</p>
-				<div class="half">apitest.js の結果<pre><code class="js">noop({}) : null
-list({}) : []
-write({"item1":"writedata1"}) : ["item1"]
-list({}) : ["item1"]
-read(["item1","item2"]) : {"item1":"writedata1", "item2":""}
-write({"item2":"writedata2","item3":"writedata3"}) : ["item2", "item3"]
-list({}) : ["item1", "item2", "item3"]
-read(["item1","item2","item3"]) : {"item1":"writedata1", "item2":"writedata2", "item3":"writedata3"}
-delete(["item1"]) : ["item1"]
-list({}) : ["item2", "item3"]
-delete(["item1","item2"]) : ["item2"]
-list({}) : ["item3"]
-delete(["item3"]) : ["item3"]
-list({}) : []
 </code></pre></div>
 
 			</div>
